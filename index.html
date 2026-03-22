@@ -1,207 +1,34 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Státní portál KHDL | Klobouky u Brna</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --khdl-dark: #1b3022;
-            --khdl-leaf: #4f6d3d;
-            --khdl-gold: #c5a059;
-            --bg-light: #f4f7f6;
-        }
+# bdinkatomas-dev
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background-color: var(--bg-light);
-            color: #333;
-        }
+Student a developer zaměřený na tvorbu moderních webových aplikací, UI design a experimentální projekty.  
+Tento repozitář slouží jako osobní portfolio a ukázka mých projektů.
 
-        .gov-header-bar {
-            background: #000;
-            color: #aaa;
-            padding: 8px;
-            font-size: 10px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+---
 
-        header {
-            background: linear-gradient(135deg, var(--khdl-dark) 0%, var(--khdl-leaf) 100%);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-            border-bottom: 5px solid var(--khdl-gold);
-        }
+## 🛠 Projekty
 
-        .seal { font-size: 50px; margin-bottom: 10px; }
+| Projekt | Popis |
+|---------|-------|
+| [Github](https://github.com/bdinkatomas-dev/bdinkatomas-dev) | Osobní prezentace a UI experimenty |
+| Webové aplikace | Frontend logika a interaktivní prvky |
+| Později | Nové projekty budou doplněny |
 
-        .container {
-            max-width: 1100px;
-            margin: -30px auto 50px;
-            display: grid;
-            grid-template-columns: 1.8fr 1.2fr;
-            gap: 25px;
-            padding: 0 20px;
-        }
+---
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
+## 📝 Devlogy
 
-        h2 { color: var(--khdl-dark); border-bottom: 2px solid var(--bg-light); padding-bottom: 10px; }
+| Den | Aktivita |
+|-----|----------|
+| 01 / začátek | Jak udělat web #1 |
+| 02 / layout | Později |
 
-        /* MONITORING STATUS */
-        #status-indicator {
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 15px;
-            border: 2px solid;
-            transition: 0.3s;
-        }
+---
 
-        /* STYLOVÁNÍ ODKAZŮ PRO STAŽENÍ */
-        .download-list { list-style: none; padding: 0; }
-        .download-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: #fafafa;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border-left: 4px solid var(--khdl-leaf);
-            transition: 0.2s;
-        }
-        .download-item:hover { background: #f0f0f0; transform: translateX(5px); }
+## 💻 O mně
 
-        .btn-download {
-            background: var(--khdl-dark);
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-        }
+Chodím na gymnázium, snažím se vytvářet a vyvíjet webové aplikace, programy a hry, a také open source projekty dostupné na Linuxu.  
+Mým cílem je vytvářet čistý, rychlý a technicky kvalitní kód s moderním designem.
 
-        .btn-download:hover { background: var(--khdl-gold); color: var(--khdl-dark); }
+---
 
-        .economy-box {
-            background: #fffdf2;
-            border: 1px solid var(--khdl-gold);
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        footer { text-align: center; padding: 40px; color: #888; font-size: 12px; }
-
-        @media (max-width: 850px) { .container { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
-
-<div class="gov-header-bar">Oficiální digitální uzel Konfederace KHDL • Verze 3.0</div>
-
-<header>
-    <div class="seal">🌲</div>
-    <h1>Konfederace Horního a Dolního lesa</h1>
-    <p>Svrchovaná správa biomu Klobouky u Brna</p>
-</header>
-
-<div class="container">
-    
-    <div class="main">
-        <div class="card">
-            <h2>📂 Sbírka zákonů (Direct Download)</h2>
-            <p style="font-size: 13px; color: #666;">Kliknutím na tlačítko stáhnete PDF přímo z vládního archivu.</p>
-            
-            <div class="download-list">
-                <div class="download-item">
-                    <span>01 | Ústava KHDL</span>
-                    <a href="https://github.com/bdinkatomas-dev/KHDL/blob/01_DOKUMENTACE_PRO_VEREJNOST/01_USTAVA_KHDL.pdf" class="btn-download" download>STÁHNOUT</a>
-                </div>
-                <div class="download-item">
-                    <span>02 | Lesní zákoník</span>
-                    <a href="https://github.com/bdinkatomas-dev/KHDL/blob/01_DOKUMENTACE_PRO_VEREJNOST/02_LESNI_ZAKONIK.pdf" class="btn-download" download>STÁHNOUT</a>
-                </div>
-                <div class="download-item">
-                    <span>06 | Zákon o občanství</span>
-                    <a href="https://github.com/bdinkatomas-dev/KHDL/blob/01_DOKUMENTACE_PRO_VEREJNOST/06_ZAKON_O_OBCANSTVI.pdf" class="btn-download" download>STÁHNOUT</a>
-                </div>
-                <div class="download-item">
-                    <span>11 | Listina prav (LL)</span>
-                    <a href="https://github.com/bdinkatomas-dev/KHDL/blob/01_DOKUMENTACE_PRO_VEREJNOST/09_LISTINA_PRAV.pdf" class="btn-download" download>STÁHNOUT</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="margin-top: 25px;">
-            <h2>💰 Ekonomika: Lesní lístek (LL)</h2>
-            <div class="economy-box">
-                <span style="font-size: 24px; font-weight: bold; color: var(--khdl-leaf);">1 LL = 1.00 Kyslíková jednotka</span>
-                <p style="font-size: 12px; margin-top: 10px;">Měna je kryta 100% biomasou Distriktu Superior.</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <div class="card">
-            <h2>🌤️ Monitoring biomu</h2>
-            
-            <div id="status-indicator">
-                <span id="status-text">ZJIŠŤOVÁNÍ STAVU...</span>
-            </div>
-
-            <iframe src="https://www.meteoblue.com/en/weather/widget/three/klobouky-u-brna_czech-republic_3073539?geoloc=fixed&nocurrent=0&noforecast=1&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&layout=light"  
-                frameborder="0" scrolling="NO" allowtransparency="true" 
-                style="width: 100%; height: 230px; border-radius: 8px;">
-            </iframe>
-        </div>
-
-        <div class="card" style="margin-top: 25px; background: var(--khdl-dark); color: white;">
-            <h2>📍 Mapa území</h2>
-            <div style="height: 150px; border: 1px dashed var(--khdl-gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px;">
-                KLASIFIKOVANÝ PŘÍSTUP (SOL)
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<footer>
-    <p>© 2026 Konfederace Horního a Dolního lesa<br>Digitální suverenita zajištěna Kanceláří Správce</p>
-</footer>
-
-<script>
-    // NASTAVENÍ STAVU: 1=Zelená, 2=Žlutá, 3=Červená
-    const KHDL_STATUS = 1; 
-
-    const box = document.getElementById('status-indicator');
-    const text = document.getElementById('status-text');
-
-    if (KHDL_STATUS === 1) {
-        box.style.backgroundColor = "#e8f5e9"; box.style.borderColor = "#2e7d32"; box.style.color = "#1b5e20";
-        text.innerText = "🟢 STAV: BEZPEČNÝ VSTUP";
-    } else if (KHDL_STATUS === 2) {
-        box.style.backgroundColor = "#fffde7"; box.style.borderColor = "#fbc02d"; box.style.color = "#f57f17";
-        text.innerText = "🟡 STAV: ZVÝŠENÁ OPATRNOST";
-    } else {
-        box.style.backgroundColor = "#ffebee"; box.style.borderColor = "#c62828"; box.style.color = "#b71c1c";
-        text.innerText = "🔴 STAV: NEBEZPEČÍ - VSTUP ZAKÁZÁN";
-    }
-</script>
-
-</body>
-</html>
+## 📂 Struktura repozitáře

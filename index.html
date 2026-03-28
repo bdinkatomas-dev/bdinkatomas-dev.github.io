@@ -5,37 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>bdinkatomas-dev</title>
 
-<!-- CSS je inline, aby fungoval web jen s tímto souborem -->
 <style>
-/* ZÁKLADNÍ STYL */
 body {
     margin: 0;
     font-family: "Inter", "Segoe UI", sans-serif;
-    background: #0d1117; /* tmavé pozadí */
-    color: #c9d1d9;      /* světle šedý text */
-    scroll-behavior: smooth; /* hladké scrollování */
+    background: #0d1117;
+    color: #c9d1d9;
+    scroll-behavior: smooth;
 }
 
-/* HLAVIČKA */
 header {
     position: fixed;
     width: 100%;
     display: flex;
     justify-content: space-between;
     padding: 20px 40px;
-    background: #0d1117; /* stejná barva jako pozadí */
-    border-bottom: 1px solid #21262d; /* oddělení hlavičky */
+    background: #0d1117;
+    border-bottom: 1px solid #21262d;
     z-index: 1000;
 }
 
-/* LOGO (tvé jméno) */
 .logo {
     font-size: 16px;
     font-weight: 600;
-    color: #58a6ff; /* modrá, kontrastní */
+    color: #58a6ff;
 }
 
-/* NAVIGACE */
 nav a {
     color: #c9d1d9;
     margin-left: 25px;
@@ -43,75 +38,71 @@ nav a {
     font-size: 14px;
     transition: color 0.2s;
 }
-
 nav a:hover {
-    color: #58a6ff; /* změna barvy při hover */
+    color: #58a6ff;
 }
 
-/* HERO SEKCE */
 .hero {
-    height: 100vh; /* zabere celou výšku okna */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 0 15%;
 }
-
 .hero h1 {
     font-size: 42px;
     margin-bottom: 10px;
     color: white;
 }
-
 .hero p {
     font-size: 18px;
     color: #8b949e;
     max-width: 500px;
 }
-
-/* SEKCE (projekty, devlogy, o mně) */
-.section {
-    padding: 100px 15%;
-    border-top: 1px solid #21262d; /* oddělení sekcí */
+#aktualni-cas {
+    margin-top: 10px;
+    color: #58a6ff;
+    font-weight: 500;
 }
 
+.section {
+    padding: 100px 15%;
+    border-top: 1px solid #21262d;
+}
 .section h2 {
     font-size: 22px;
     margin-bottom: 30px;
     color: white;
 }
 
-/* GRID pro karty */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* responzivní sloupce */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
 }
 
-/* KARTA (projekty, devlogy) */
 .card {
-    display: block; /* aby šla celá karta kliknout, i když je <a> */
+    display: block;
     background: #161b22;
     padding: 20px;
     border: 1px solid #21262d;
     border-radius: 8px;
-    transition: 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     color: inherit;
     text-decoration: none;
     cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
-
 .card:hover {
-    border-color: #58a6ff; /* zvýraznění při hover */
-    transform: translateY(-3px); /* jemný pohyb */
+    border-color: #58a6ff;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
 }
-
 .card h3 {
     margin-top: 0;
     color: white;
 }
 
-/* FOOTER */
 footer {
     padding: 40px;
     text-align: center;
@@ -123,37 +114,29 @@ footer {
 </head>
 <body>
 
-<!-- HLAVIČKA -->
 <header>
     <div class="logo">bdinkatomas-dev</div>
     <nav>
         <a href="#projekty">projekty</a>
-        <a href="#devlogy">Jak na web</a>
+        <a href="#jak-na-web">Jak na web</a>
         <a href="#omne">o mně</a>
         <a href="#OS">Jak udělat OS</a>
     </nav>
 </header>
 
-<!-- HERO SEKCE -->
 <section class="hero">
     <h1>bdinkatomas-dev</h1>
-    <p>
-        Mladý developer a student, který se věnuje tvorbě moderních webových aplikací,
-        UI designu a experimentálním projektům.
-    </p>
+    <p>Mladý developer a student, který se věnuje tvorbě moderních webových aplikací, UI designu a experimentálním projektům.</p>
+    <p id="aktualni-cas"></p>
 </section>
 
-<!-- SEKCE PROJEKTY -->
 <section id="projekty" class="section">
     <h2>projekty</h2>
     <div class="grid">
-        <!-- Github karta -->
         <a href="https://github.com/bdinkatomas-dev/bdinkatomas-dev" target="_blank" class="card">
             <h3>Github</h3>
             <p>Osobní prezentace a UI experimenty</p>
         </a>
-
-        <!-- Jak udělat web karta -->
         <a href="https://github.com/bdinkatomas-dev/bdinkatomas-dev/tree/main/Jak%20ud%C4%9Blat%20vlastn%C3%AD%20os%3F" target="_blank" class="card">
             <h3>Jak udělat OS</h3>
             <p>Návod na vytvoření vlastního forku z již existujícího Linux OS</p>
@@ -161,48 +144,55 @@ footer {
     </div>
 </section>
 
-<!-- SEKCE DEVLOGY -->
-<section id="devlogy" class="section">
+<section id="jak-na-web" class="section">
     <h2>Jak na web</h2>
     <div class="grid">
         <div class="card">
-            <h3>01 / </h3>
+            <h3>01 /</h3>
             <p>Jak udělat web?</p>
         </div>
         <div class="card">
-            <h3>02 / </h3>
+            <h3>02 /</h3>
             <p>Jak udělat přitažlivý web?</p>
         </div>
     </div>
 </section>
 
-    <section id="OS" class="section">
+<section id="OS" class="section">
     <h2>Jak udělat OS</h2>
     <div class="grid">
         <div class="card">
-            <h3>01 / </h3>
-            <p>Jak vybrat správný os</p>
+            <h3>01 /</h3>
+            <p>Jak vybrat správný OS</p>
         </div>
         <div class="card">
-            <h3>02 / </h3>
-            <p>Nástroje,co budou potřeba</p>
+            <h3>02 /</h3>
+            <p>Nástroje, co budou potřeba</p>
         </div>
     </div>
 </section>
 
-<!-- SEKCE O MNĚ -->
 <section id="omne" class="section">
     <h2>o mně</h2>
-    <p>
-        Jsem mladý developer a student gymnázia, který se snaží vytvářet a vyvíjet webové aplikace,
-        programy, hry a open source projekty dostupné na Linuxu.
-    </p>
+    <p>Jsem mladý developer a student gymnázia, který se snaží vytvářet a vyvíjet webové aplikace, programy, hry a open source projekty dostupné na Linuxu.</p>
 </section>
 
-<!-- FOOTER -->
 <footer>
     © 2026 Tomáš Bdinka
 </footer>
+
+<script>
+function aktualizujCas() {
+    const casElement = document.getElementById('aktualni-cas');
+    const now = new Date();
+    const hodiny = now.getHours().toString().padStart(2,'0');
+    const minuty = now.getMinutes().toString().padStart(2,'0');
+    const sekundy = now.getSeconds().toString().padStart(2,'0');
+    casElement.textContent = `Aktuální čas: ${hodiny}:${minuty}:${sekundy}`;
+}
+setInterval(aktualizujCas, 1000);
+aktualizujCas();
+</script>
 
 </body>
 </html>

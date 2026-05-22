@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Orvithium Labs</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0f14;
+      color: white;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(120deg, #111827, #0b0f14);
+      border-bottom: 1px solid #1f2937;
+    }
+
+    h1 {
+      font-size: 44px;
+      margin: 0;
+    }
+
+    .sub {
+      color: #7aa2ff;
+      margin-top: 10px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .info {
+      background: #0f1623;
+      border: 1px solid #2a3445;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 25px;
+      color: #b0b7c3;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .project {
+      background: #161b22;
+      border: 1px solid #2a3445;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .project:hover {
+      transform: scale(1.02);
+      border-color: #7aa2ff;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .desc {
+      margin-top: 8px;
+      color: #b0b7c3;
+      font-size: 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #7aa2ff;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #666;
+      border-top: 1px solid #1f2937;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Orvithium Labs</h1>
+  <div class="sub">Open-source development studio</div>
+</header>
+
+<div class="container">
+
+  <div class="info">
+    Orvithium Labs je vývojové studio zaměřené na open-source technologie, 
+    modulární systémy a experimentální softwarové i hardwarové projekty. 
+    Tento projektový hub slouží jako přehled všech aktuálních iniciativ.
+  </div>
+
+  <!-- PROJECT 1 -->
+  <div class="project" onclick="openLink('https://example.com/nexio-flow')">
+    <div class="title">Nexio Flow 2026</div>
+    <div class="desc">
+      Lightweight open-source laptop platform zaměřená na jednoduchost a každodenní použití.
+    </div>
+    <div class="tag">OS • Hardware concept • Entry level</div>
+  </div>
+
+  <!-- PROJECT 2 -->
+  <div class="project" onclick="openLink('https://example.com/nexio-pulse')">
+    <div class="title">Nexio Pulse</div>
+    <div class="desc">
+      Výkonnější modulární platforma pro pokročilé uživatele a flexibilní vývoj.
+    </div>
+    <div class="tag">Modular • Performance • Development</div>
+  </div>
+
+  <!-- PROJECT 3 -->
+  <div class="project" onclick="openLink('https://example.com/nexio-elite')">
+    <div class="title">Nexio Elite</div>
+    <div class="desc">
+      Prémiová produktová řada zaměřená na profesionální a kreativní použití.
+    </div>
+    <div class="tag">Premium • Productivity • Pro users</div>
+  </div>
+
+  <!-- PROJECT 4 -->
+  <div class="project" onclick="openLink('https://example.com/nexio-search')">
+    <div class="title">Nexio Search</div>
+    <div class="desc">
+      Experimentální vyhledávací systém pro Nexio ekosystém s důrazem na rychlost a integraci.
+    </div>
+    <div class="tag">Search • AI • System tool</div>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Orvithium Labs
+</footer>
+
+<script>
+  function openLink(url) {
+    window.open(url, "_blank");
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jantar - Dokumentace & Balíčky</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --accent-color: #ff9f1c;
+            --accent-hover: #ffbf69;
+            --border-color: #30363d;
+            --code-bg: #21262d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1f1f1f, var(--bg-color));
+            border-bottom: 2px solid var(--accent-color);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #8b949e;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        /* Sekce pro příkazy CLI */
+        .cli-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+        }
+
+        .card h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #8b949e;
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: var(--accent-hover);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* Tabulky pro vestavěné funkce */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1f242c;
+            color: var(--accent-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background-color: #1f242c;
+        }
+
+        .func-name {
+            font-family: 'Courier New', Courier, monospace;
+            color: #58a6ff;
+            font-weight: bold;
+        }
+
+        /* Sekce Balíčky */
+        .package-list {
+            list-style: none;
+        }
+
+        .package-item {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .package-details h4 {
+            color: #fff;
+            font-size: 1.1rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .package-details p {
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        .install-cmd {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Jantar Language</h1>
+        <p>Moderní programovací jazyk v češtině &bull; Oficiální dokumentace ekosystému</p>
+    </header>
+
+    <div class="container">
+
+        <section>
+            <h2>Příkazy v terminálu (CLI)</h2>
+            <div class="cli-grid">
+                <div class="card">
+                    <div class="code-block">python jantar.py soubor.janr</div>
+                    <h3>Spuštění programu</h3>
+                    <p>Spustí a interpretuje váš Jantarový zdrojový kód zapsaný v souboru.</p>
+                </div>
+                <div class="card">
+                    <div class="code-block">python jantar.py instaluj LIST</div>
+                    <h3>Zobrazení balíčků</h3>
+                    <p>Bleskově vypíše přehled všech oficiálně dostupných "plus" balíčků z cloudu.</p>
+                </div>
+                <div class="card">
+                    <div class="code-block">python jantar.py instaluj [nazev]</div>
+                    <h3>Instalace balíčku</h3>
+                    <p>Stáhne požadovaný balíček z registru (GitHubu) přímo do vaší složky <code class="code-block" style="margin:0; padding:2px 5px;">jantar_balicky/</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Základní vestavěné funkce</h2>
+            <p style="margin-bottom: 15px; color: #8b949e;">Tyto funkce jsou dostupné přímo v jádru Jantaru bez nutnosti cokoli importovat.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Příkaz / Funkce</th>
+                        <th>Popis použití</th>
+                        <th>Příklad v Jantaru</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="func-name">vypis()</td>
+                        <td>Vypíše zadanou hodnotu nebo text do konzole.</td>
+                        <td><code>vypis("Ahoj světe")</code></td>
+                    </tr>
+                    <tr>
+                        <td class="func-name">nacti()</td>
+                        <td>Zastaví program a počká na textový vstup od uživatele.</td>
+                        <td><code>jmeno = nacti("Zadej jméno: ")</code></td>
+                    </tr>
+                    <tr>
+                        <td class="func-name">zaokrouhli()</td>
+                        <td>Zaokrouhlí číslo na zadaný počet desetinných míst.</td>
+                        <td><code>zaokrouhli(3.14159, 2)</code></td>
+                    </tr>
+                    <tr>
+                        <td class="func-name">absolutni_hodnota()</td>
+                        <td>Vrátí absolutní (kladnou) hodnotu čísla.</td>
+                        <td><code>absolutni_hodnota(-42)</code></td>
+                    </tr>
+                    <tr>
+                        <td class="func-name">delka()</td>
+                        <td>Vrátí počet prvků v seznamu nebo počet znaků v řetězci.</td>
+                        <td><code>delka("Jantar")</code></td>
+                    </tr>
+                    <tr>
+                        <td class="func-name">otevri_soubor()</td>
+                        <td>Otevře lokální soubor pro čtení nebo zápis.</td>
+                        <td><code>otevri_soubor("data.txt", "r")</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Oficiální Jantar "Plus" Balíčky</h2>
+            <p style="margin-bottom: 20px; color: #8b949e;">Rozšiřující knihovny, které posunou možnosti vašeho kódu na maximum. Nainstalujte je pomocí příkazové řádky.</p>
+            
+            <ul class="package-list">
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>cas_plus</h4>
+                        <p>Ultimátní edice pro práci s časem, datem, prodlevami a stopkami.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj cas_plus</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>databaze_plus</h4>
+                        <p>Bezpečné a bleskové rozhraní pro lokální SQLite databáze (CRUD).</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj databaze_plus</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>grafika</h4>
+                        <p>Barevný výstup v terminálu a jednoduché 2D želví kreslení.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj grafika</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>hra_plus</h4>
+                        <p>Ultimátní 2D herní engine na bázi Tkinteru pro tvorbu her v češtině.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj hra_plus</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>matematika_3d</h4>
+                        <p>Pokročilá edice pro 3D vektory, prostorovou geometrii, rotace a fyziku.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj matematika_3d</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>matematika_plus</h4>
+                        <p>Teorie čísel, statistika, maticové násobení a finanční matematika.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj matematika_plus</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>nahoda_plus</h4>
+                        <p>Generování náhodných čísel, barev, hesel a pravděpodobnostní simulace.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj nahoda_plus</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>sit_plus</h4>
+                        <p>Připojení k internetu, stahování souborů a parsování cloudových JSON API.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj sit_plus</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>soubory_plus</h4>
+                        <p>Správa souborů, složek, mazání, kopírování a komplexní systém logování.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj soubory_plus</div>
+                </li>
+                <li class="package-item">
+                    <div class="package-details">
+                        <h4>text_plus</h4>
+                        <p>Pokročilé analýzy řetězců, šifrování, cenzura zakázaných slov a validace.</p>
+                    </div>
+                    <div class="install-cmd">jantar.py instaluj text_plus</div>
+                </li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Jantar Language. Vytvořeno pro vývojáře nového věku.</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

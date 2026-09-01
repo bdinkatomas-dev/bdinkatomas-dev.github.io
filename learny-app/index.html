@@ -1,1 +1,472 @@
-<meta http-equiv="refresh" content="0;url=https://github.com/bdinkatomas-dev/learny-app">
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny App - Ultimate Student Tool (Flash-Lite)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans select-none">
+
+    <!-- TOP NAVIGATION -->
+    <header class="bg-slate-900/80 backdrop-blur border-b border-slate-800 px-6 py-3 sticky top-0 z-50 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-tr from-blue-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold tracking-wide text-base bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Learny App</h1>
+                <span class="text-[10px] text-blue-400 font-semibold tracking-wider uppercase">Gemini 2.5 Flash-Lite</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <!-- AI Limit Counter Badge -->
+            <div class="bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-full flex items-center gap-2 text-xs">
+                <i class="fa-solid fa-bolt text-amber-400"></i>
+                <span>AI Zprávy: <strong id="aiLimitCount" class="text-white">10</strong>/10</span>
+            </div>
+
+            <!-- Upgrade Button -->
+            <button onclick="openUpgradeModal()" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg shadow-orange-500/20 transition-all transform hover:scale-105 flex items-center gap-1.5">
+                <i class="fa-solid fa-crown"></i> Upgrade PRO
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP DASHBOARD LAYOUT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        
+        <!-- SIDEBAR / NAVIGATION TOOLS -->
+        <div class="flex flex-col gap-3">
+            <div class="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-3 flex flex-col gap-1">
+                <span class="text-[11px] font-bold text-slate-500 uppercase px-3 py-1 tracking-wider">Nástroje</span>
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition bg-blue-600/10 text-blue-400 border border-blue-500/20">
+                    <i class="fa-solid fa-house-chimney w-5"></i> Přehled
+                </button>
+                <button onclick="switchTab('pomodoro')" id="nav-pomodoro" class="tab-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-clock w-5 text-emerald-400"></i> Pomodoro Časovač
+                </button>
+                <button onclick="switchTab('summarizer')" id="nav-summarizer" class="tab-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5 text-indigo-400"></i> AI Shrnovač
+                </button>
+                <button onclick="switchTab('flashcards')" id="nav-flashcards" class="tab-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-layer-group w-5 text-amber-400"></i> AI Kartičky & Kvízy
+                </button>
+                <button onclick="switchTab('tutor')" id="nav-tutor" class="tab-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-robot w-5 text-rose-400"></i> AI Tutor
+                </button>
+            </div>
+
+            <!-- Quick Stats Widget -->
+            <div class="bg-gradient-to-b from-slate-900 to-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3">
+                <div class="flex justify-between items-center text-xs text-slate-400">
+                    <span>Denní cíl studia</span>
+                    <span class="text-blue-400 font-bold">45 min</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div class="bg-blue-500 h-full w-[60%] rounded-full"></div>
+                </div>
+                <div class="flex items-center gap-2 pt-1 text-[11px] text-slate-400">
+                    <i class="fa-solid fa-fire text-amber-500"></i>
+                    <span>Streak: <strong>3 dny v řadě</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENT VIEW AREA -->
+        <div class="md:col-span-2 lg:col-span-3 flex flex-col gap-5">
+
+            <!-- 1. DASHBOARD VIEW -->
+            <div id="view-dashboard" class="view-section flex flex-col gap-5">
+                <div class="bg-gradient-to-r from-blue-900/20 via-indigo-900/10 to-slate-900 border border-blue-500/20 rounded-3xl p-6 md:p-8 flex flex-col gap-3 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 translate-x-4 -translate-y-4 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Model: Gemini 2.5 Flash-Lite</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white">Vítej v rychlé testovací verzi Learny App</h2>
+                    <p class="text-slate-400 text-sm max-w-xl">Všechny funkce jedou na nejnovějším úsporném a rychlém AI modelu.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div onclick="switchTab('pomodoro')" class="bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 transition p-5 rounded-2xl cursor-pointer flex flex-col gap-2 group">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg group-hover:scale-110 transition">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mt-2">Pomodoro</h3>
+                        <p class="text-xs text-slate-400">Měř si čas na učení a pauzy bez rozptylování.</p>
+                    </div>
+
+                    <div onclick="switchTab('summarizer')" class="bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 transition p-5 rounded-2xl cursor-pointer flex flex-col gap-2 group">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-lg group-hover:scale-110 transition">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mt-2">AI Shrnovač</h3>
+                        <p class="text-xs text-slate-400">Vlož dlouhý text a získej okamžité klíčové body.</p>
+                    </div>
+
+                    <div onclick="switchTab('flashcards')" class="bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 transition p-5 rounded-2xl cursor-pointer flex flex-col gap-2 group">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg group-hover:scale-110 transition">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mt-2">AI Kartičky</h3>
+                        <p class="text-xs text-slate-400">Generuj kvízy a kartičky na jakékoliv téma.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. POMODORO TIMER VIEW -->
+            <div id="view-pomodoro" class="view-section hidden flex flex-col gap-5">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center text-center gap-6">
+                    <div class="flex gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+                        <button onclick="setPomodoroMode('work')" id="pomo-mode-work" class="px-4 py-1.5 rounded-xl text-xs font-bold transition bg-emerald-600 text-white">Studium (25m)</button>
+                        <button onclick="setPomodoroMode('break')" id="pomo-mode-break" class="px-4 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">Pauza (5m)</button>
+                    </div>
+
+                    <div class="text-6xl md:text-8xl font-black tracking-wider text-white font-mono my-4" id="pomoTimerDisplay">
+                        25:00
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button onclick="togglePomodoro()" id="pomoStartBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-emerald-600/20 transition flex items-center gap-2">
+                            <i class="fa-solid fa-play" id="pomoPlayIcon"></i> <span id="pomoStartText">Spustit</span>
+                        </button>
+                        <button onclick="resetPomodoro()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3 rounded-2xl font-bold text-sm transition">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. AI SUMMARIZER VIEW -->
+            <div id="view-summarizer" class="view-section hidden flex flex-col gap-4">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-bold text-lg text-indigo-400 flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Shrnovač textu
+                        </h2>
+                        <span class="text-xs text-slate-500">Spotřebuje 1 AI zprávu</span>
+                    </div>
+                    <textarea id="sumInputText" placeholder="Sem vlož text, kapitolu z učebnice nebo článek..." class="w-full h-36 bg-slate-950 border border-slate-800 rounded-2xl p-4 text-sm resize-none focus:outline-none focus:border-indigo-500 text-slate-200 placeholder-slate-600"></textarea>
+                    <button onclick="runAISummarizer()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-2xl text-sm transition self-end shadow-lg shadow-indigo-600/20 flex items-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> Shrnout text
+                    </button>
+                </div>
+                <div id="sumResultCard" class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 hidden flex flex-col gap-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Výsledek od AI:</h3>
+                    <div id="sumResultContent" class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap"></div>
+                </div>
+            </div>
+
+            <!-- 4. AI FLASHCARDS & QUIZ VIEW -->
+            <div id="view-flashcards" class="view-section hidden flex flex-col gap-4">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-bold text-lg text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group"></i> AI Generátor Kartiček
+                        </h2>
+                        <span class="text-xs text-slate-500">Spotřebuje 1 AI zprávu</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <input type="text" id="flashTopicInput" placeholder="Zadej téma (např. Kovalentní vazba, 1. republika...)" class="flex-1 bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-slate-200 placeholder-slate-600">
+                        <button onclick="runAIFlashcards()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-6 py-3 rounded-2xl text-sm transition shadow-lg shadow-amber-600/20 flex items-center gap-2">
+                            <i class="fa-solid fa-sparkles"></i> Generovat
+                        </button>
+                    </div>
+                </div>
+                <div id="flashResultCard" class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 hidden flex flex-col gap-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Vygenerované otázky:</h3>
+                    <div id="flashResultContent" class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap"></div>
+                </div>
+            </div>
+
+            <!-- 5. AI TUTOR CHAT VIEW -->
+            <div id="view-tutor" class="view-section hidden flex flex-col gap-4 h-[calc(100vh-130px)] max-h-[700px]">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl flex-1 flex flex-col overflow-hidden">
+                    <div class="p-4 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+                                <i class="fa-solid fa-robot text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-white">Learny AI Tutor (Flash-Lite)</h3>
+                                <span class="text-[10px] text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-500">Zbývá: <strong id="tutorLimitText" class="text-slate-300">10</strong> zpráv</span>
+                    </div>
+
+                    <div id="chatMessages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 text-sm">
+                        <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-3.5 max-w-[85%] self-start text-slate-200">
+                            Ahoj! Jsem připravený ti pomoct s učením přes Gemini 2.5 Flash-Lite. Zeptej se mě na cokoliv!
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-slate-900/80 border-t border-slate-800 flex gap-2">
+                        <input type="text" id="chatInputText" onkeydown="if(event.key==='Enter') sendTutorMessage()" placeholder="Zeptej se na cokoliv..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-rose-500 text-slate-200 placeholder-slate-600">
+                        <button onclick="sendTutorMessage()" class="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition shadow-lg shadow-rose-600/20">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- UPGRADE MODAL -->
+    <div id="upgradeModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 md:p-8 flex flex-col gap-6 relative shadow-2xl">
+            <button onclick="closeUpgradeModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex flex-col items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white text-2xl shadow-xl shadow-orange-500/20">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">Přejít na Learny PRO</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">Získej neomezené AI zprávy a přednostní přístup k modelům.</p>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-300 font-medium">Měsíční členství</span>
+                    <span class="text-white font-bold">149 Kč <span class="text-xs text-slate-500 font-normal">/ měsíc</span></span>
+                </div>
+            </div>
+
+            <button onclick="simulateUpgrade()" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold py-3.5 rounded-2xl text-sm transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bolt"></i> Aktivovat PRO verzi (Simulace)
+            </button>
+        </div>
+    </div>
+
+    <!-- SKRYTÉ API & GEMINI 2.5 FLASH-LITE KONFIGURACE -->
+    <script>
+        const CONFIG = {
+            apiKey: "AQ.Ab8RN6Lyf6RBKl5PZ_kUqROgHvmNiAMr6EbgGUgx-pvQlzT2fw" 
+        };
+
+        // Stav aplikace & Limity
+        let userState = {
+            aiLimit: 10,
+            isPro: false
+        };
+
+        function updateLimitDisplay() {
+            document.getElementById('aiLimitCount').innerText = userState.isPro ? "∞" : userState.aiLimit;
+            document.getElementById('tutorLimitText').innerText = userState.isPro ? "Neomezeno" : userState.aiLimit;
+        }
+
+        function checkAndConsumeLimit() {
+            if (userState.isPro) return true;
+            if (userState.aiLimit <= 0) {
+                openUpgradeModal();
+                return false;
+            }
+            userState.aiLimit--;
+            updateLimitDisplay();
+            return true;
+        }
+
+        // Přepínání záložek
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
+                el.classList.add('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-800/50');
+            });
+
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-800/50');
+                activeBtn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
+            }
+        }
+
+        // Pomodoro Časovač logika
+        let pomoInterval = null;
+        let pomoTime = 25 * 60;
+        let pomoRunning = false;
+        let pomoMode = 'work';
+
+        function setPomodoroMode(mode) {
+            pomoMode = mode;
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            updatePomoButtonState();
+            pomoTime = mode === 'work' ? 25 * 60 : 5 * 60;
+            renderPomoTime();
+
+            if(mode === 'work') {
+                document.getElementById('pomo-mode-work').className = "px-4 py-1.5 rounded-xl text-xs font-bold transition bg-emerald-600 text-white";
+                document.getElementById('pomo-mode-break').className = "px-4 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white";
+            } else {
+                document.getElementById('pomo-mode-break').className = "px-4 py-1.5 rounded-xl text-xs font-bold transition bg-emerald-600 text-white";
+                document.getElementById('pomo-mode-work').className = "px-4 py-1.5 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white";
+            }
+        }
+
+        function togglePomodoro() {
+            if(pomoRunning) {
+                clearInterval(pomoInterval);
+                pomoRunning = false;
+            } else {
+                pomoRunning = true;
+                pomoInterval = setInterval(() => {
+                    if(pomoTime > 0) {
+                        pomoTime--;
+                        renderPomoTime();
+                    } else {
+                        clearInterval(pomoInterval);
+                        pomoRunning = false;
+                        alert("Čas vypršel! Skvělá práce.");
+                        setPomodoroMode(pomoMode === 'work' ? 'break' : 'work');
+                    }
+                }, 1000);
+            }
+            updatePomoButtonState();
+        }
+
+        function resetPomodoro() {
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            pomoTime = pomoMode === 'work' ? 25 * 60 : 5 * 60;
+            renderPomoTime();
+            updatePomoButtonState();
+        }
+
+        function renderPomoTime() {
+            const mins = Math.floor(pomoTime / 60).toString().padStart(2, '0');
+            const secs = (pomoTime % 60).toString().padStart(2, '0');
+            document.getElementById('pomoTimerDisplay').innerText = `${mins}:${secs}`;
+        }
+
+        function updatePomoButtonState() {
+            const icon = document.getElementById('pomoPlayIcon');
+            const text = document.getElementById('pomoStartText');
+            if(pomoRunning) {
+                icon.className = "fa-solid fa-pause";
+                text.innerText = "Pozastavit";
+            } else {
+                icon.className = "fa-solid fa-play";
+                text.innerText = "Spustit";
+            }
+        }
+
+        // Volání Gemini 2.5 Flash-Lite API
+        async function callGeminiAPI(promptText) {
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${CONFIG.apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }]
+                    })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text;
+                } else if (data.error) {
+                    return `Chyba API: ${data.error.message}`;
+                } else {
+                    return "AI neodpověděla správně, zkontroluj formát klíče.";
+                }
+            } catch (error) {
+                return "Chyba připojení k serveru Google API.";
+            }
+        }
+
+        // AI Shrnovač
+        async function runAISummarizer() {
+            if(!checkAndConsumeLimit()) return;
+            const text = document.getElementById('sumInputText').value.trim();
+            if(!text) {
+                alert("Nejprve vlož text ke shrnutí.");
+                userState.aiLimit++;
+                updateLimitDisplay();
+                return;
+            }
+            const resCard = document.getElementById('sumResultCard');
+            const resContent = document.getElementById('sumResultContent');
+            resCard.classList.remove('hidden');
+            resContent.innerText = "Analyzuji text pomocí Gemini 2.5 Flash-Lite...";
+
+            const result = await callGeminiAPI(`Shrň tento text pro studenta do přehledných bodů v češtině:\n\n${text}`);
+            resContent.innerText = result;
+        }
+
+        // AI Kartičky
+        async function runAIFlashcards() {
+            if(!checkAndConsumeLimit()) return;
+            const topic = document.getElementById('flashTopicInput').value.trim();
+            if(!topic) {
+                alert("Zadej téma pro generování kartiček.");
+                userState.aiLimit++;
+                updateLimitDisplay();
+                return;
+            }
+            const resCard = document.getElementById('flashResultCard');
+            const resContainer = document.getElementById('flashResultContent');
+            resCard.classList.remove('hidden');
+            resContainer.innerText = "Generuji studijní otázky přes AI...";
+
+            const result = await callGeminiAPI(`Vytvoř 3 studijní flashcards nebo otázky s odpověďmi na téma v češtině:\n\n${topic}`);
+            resContainer.innerText = result;
+        }
+
+        // AI Tutor Chat
+        async function sendTutorMessage() {
+            const input = document.getElementById('chatInputText');
+            const message = input.value.trim();
+            if(!message) return;
+
+            if(!checkAndConsumeLimit()) return;
+
+            const chatContainer = document.getElementById('chatMessages');
+            
+            chatContainer.innerHTML += `
+                <div class="bg-blue-600 text-white rounded-2xl p-3.5 max-w-[85%] self-end">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+            input.value = "";
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            const aiMsgId = "ai-msg-" + Date.now();
+            chatContainer.innerHTML += `
+                <div id="${aiMsgId}" class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-3.5 max-w-[85%] self-start text-slate-300">
+                    <span class="animate-pulse">Přemýšlím...</span>
+                </div>
+            `;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            const aiResponse = await callGeminiAPI(`Odpověz jako přátelský a nápomocný AI učitel/tutor na následující školní dotaz v češtině:\n\n${message}`);
+            document.getElementById(aiMsgId).innerText = aiResponse;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function openUpgradeModal() {
+            document.getElementById('upgradeModal').classList.remove('hidden');
+        }
+
+        function closeUpgradeModal() {
+            document.getElementById('upgradeModal').classList.add('hidden');
+        }
+
+        function simulateUpgrade() {
+            userState.isPro = true;
+            updateLimitDisplay();
+            closeUpgradeModal();
+            alert("Gratuluji! Úspěšně sis aktivoval PRO verzi. Nyní máš neomezené AI zprávy.");
+        }
+
+        updateLimitDisplay();
+    </script>
+</body>
+</html>

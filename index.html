@@ -1,132 +1,371 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hlasový chat</title>
+    <title>Echo — Voice Chat</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
+        :root {
+            --bg-color: #0f1117;
+            --surface-color: #161b22;
+            --surface-hover: #1f242c;
+            --text-color: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent-color: #58a6ff;
+            --danger-color: #ff7b72;
+            --success-color: #238636;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #0f1115;
-            color: #f1f3f5;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            margin: 0;
+            overflow: hidden;
         }
-        .box {
-            background: #1a1d24;
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid #2d3139;
-            text-align: center;
-            max-width: 400px;
+
+        .container {
             width: 100%;
+            max-width: 440px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
+
+        .brand h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            margin: 10px 0;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-secondary);
+        }
+
+        .status-dot.connected { background-color: var(--success-color); }
+        .status-dot.connecting { background-color: #d29922; }
+
+        .link-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .link-box label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .link-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 12px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-color);
+        }
+
         button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
+            background-color: var(--surface-hover);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
             border-radius: 6px;
             cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover { background: #1d4ed8; }
-        input {
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
             width: 100%;
-            padding: 10px;
-            background: #0f1115;
-            border: 1px solid #2d3139;
-            color: white;
-            border-radius: 6px;
-            margin-top: 10px;
-            box-sizing: border-box;
-            text-align: center;
         }
-        .status { margin-top: 15px; font-size: 14px; color: #9ca3af; }
+
+        button:hover {
+            border-color: var(--accent-color);
+            background-color: var(--border-color);
+        }
+
+        button.primary {
+            background-color: var(--accent-color);
+            color: #0d1117;
+            border: none;
+            font-weight: 600;
+        }
+
+        button.primary:hover {
+            opacity: 0.9;
+        }
+
+        button.danger {
+            background-color: rgba(255, 123, 114, 0.15);
+            color: var(--danger-color);
+            border-color: rgba(255, 123, 114, 0.3);
+        }
+
+        button.danger:hover {
+            background-color: rgba(255, 123, 114, 0.25);
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h2>Hlasový hovor</h2>
+    <div class="container">
+        <div class="brand">
+            <h1>Echo</h1>
+            <p>Peer-to-Peer Voice Communication</p>
+        </div>
+
+        <div class="status-badge">
+            <div id="statusDot" class="status-dot"></div>
+            <span id="statusText">Disconnected</span>
+        </div>
+
+        <!-- Initial view -->
         <div id="setupView">
-            <button onclick="startRoom()">Vytvořit místnost</button>
+            <button class="primary" onclick="createRoom()">Create Room</button>
         </div>
-        <div id="callView" style="display:none;">
-            <p>Odkaz pro druhého účastníka:</p>
-            <input type="text" id="shareLink" readonly onclick="this.select()">
+
+        <!-- Room created view (Host) -->
+        <div id="shareView" class="link-box hidden">
+            <label>Invitation Link</label>
+            <div class="link-input-group">
+                <input type="text" id="shareLink" readonly onclick="this.select()">
+                <button onclick="copyLink()" style="width: auto;">Copy</button>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); text-align: center; margin-top: 4px;">Waiting for someone to join...</p>
         </div>
-        <div class="status" id="status">Odpojeno</div>
+
+        <!-- Active call controls -->
+        <div id="callControls" class="hidden" style="display: flex; flex-direction: column; gap: 10px;">
+            <button id="muteBtn" onclick="toggleMute()">Mute Microphone</button>
+            <button class="danger" onclick="endCall()">End Call</button>
+        </div>
     </div>
 
     <audio id="remoteAudio" autoplay></audio>
 
     <script>
-        const statusEl = document.getElementById('status');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const setupView = document.getElementById('setupView');
+        const shareView = document.getElementById('shareView');
+        const shareLink = document.getElementById('shareLink');
+        const callControls = document.getElementById('callControls');
+        const muteBtn = document.getElementById('muteBtn');
         const remoteAudio = document.getElementById('remoteAudio');
-        let peer, localStream;
+
+        let peer = null;
+        let localStream = null;
+        let activeCall = null;
 
         const urlParams = new URLSearchParams(window.location.search);
         const joinId = urlParams.get('join');
 
-        async function getMic() {
+        function setStatus(text, state) {
+            statusText.textContent = text;
+            statusDot.className = 'status-dot ' + state;
+        }
+
+        async function getMicrophone() {
             if (!localStream) {
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                try {
+                    // Optimized audio constraints for voice clarity (echo cancellation, noise suppression)
+                    localStream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        },
+                        video: false
+                    });
+                } catch (err) {
+                    alert('Microphone access denied or not available.');
+                    throw err;
+                }
             }
             return localStream;
         }
 
-        async function startRoom() {
-            statusEl.innerText = 'Inicializace...';
-            await getMic();
-            
-            peer = new Peer();
+        // Automatically join if the link contains a room ID
+        window.addEventListener('load', async () => {
+            if (joinId) {
+                setupView.classList.add('hidden');
+                setStatus('Connecting to room...', 'connecting');
+                
+                try {
+                    await getMicrophone();
+                    
+                    // Use a slight random delay to ensure PeerJS handles connection cleanly
+                    peer = new Peer();
 
-            peer.on('open', (id) => {
-                const link = window.location.origin + window.location.pathname + '?join=' + id;
-                document.getElementById('setupView').style.display = 'none';
-                document.getElementById('callView').style.display = 'block';
-                document.getElementById('shareLink').value = link;
-                statusEl.innerText = 'Čeká se na připojení druhé strany...';
-            });
+                    peer.on('open', () => {
+                        const call = peer.call(joinId, localStream);
+                        handleCall(call);
+                    });
 
-            peer.on('call', (call) => {
-                call.answer(localStream);
-                setupCall(call);
-            });
-        }
+                    peer.on('error', (err) => {
+                        setStatus('Connection failed', '');
+                        alert('Error: ' + err.type);
+                    });
+                } catch (e) {
+                    setStatus('Microphone error', '');
+                }
+            }
+        });
 
-        // Pokud uživatel otevřel odkaz s ?join=ID
-        if (joinId) {
-            window.addEventListener('load', async () => {
-                statusEl.innerText = 'Připojování do místnosti...';
-                await getMic();
+        async function createRoom() {
+            try {
+                setStatus('Initializing...', 'connecting');
+                await getMicrophone();
 
                 peer = new Peer();
 
-                peer.on('open', () => {
-                    const call = peer.call(joinId, localStream);
-                    setupCall(call);
+                peer.on('open', (id) => {
+                    const link = window.location.origin + window.location.pathname + '?join=' + id;
+                    shareLink.value = link;
+                    setupView.classList.add('hidden');
+                    shareView.classList.remove('hidden');
+                    setStatus('Waiting for peer...', 'connecting');
                 });
-            });
+
+                // When someone calls this peer
+                peer.on('call', (call) => {
+                    call.answer(localStream);
+                    handleCall(call);
+                });
+
+                peer.on('error', (err) => {
+                    setStatus('Connection error', '');
+                    alert('Error: ' + err.type);
+                });
+
+            } catch (e) {
+                setStatus('Failed to start', '');
+            }
         }
 
-        function setupCall(call) {
+        function handleCall(call) {
+            activeCall = call;
+
             call.on('stream', (stream) => {
                 remoteAudio.srcObject = stream;
-                statusEl.innerText = 'Spojeno / Hovor probíhá';
-                statusEl.style.color = '#22c55e';
+                shareView.classList.add('hidden');
+                callControls.classList.remove('hidden');
+                setStatus('Connected', 'connected');
             });
 
             call.on('close', () => {
-                statusEl.innerText = 'Hovor byl ukončen';
+                endCall();
+                setStatus('Call ended by peer', '');
             });
+
+            call.on('error', () => {
+                endCall();
+                setStatus('Connection error', '');
+            });
+        }
+
+        function copyLink() {
+            shareLink.select();
+            navigator.clipboard.writeText(shareLink.value);
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = originalText, 2000);
+        }
+
+        let isMuted = false;
+        function toggleMute() {
+            if (localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                isMuted = !isMuted;
+                audioTrack.enabled = !isMuted;
+                muteBtn.textContent = isMuted ? 'Unmute Microphone' : 'Mute Microphone';
+                muteBtn.style.borderColor = isMuted ? 'var(--danger-color)' : 'var(--border-color)';
+            }
+        }
+
+        function endCall() {
+            if (activeCall) {
+                activeCall.close();
+                activeCall = null;
+            }
+            if (peer) {
+                peer.destroy();
+                peer = null;
+            }
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            remoteAudio.srcObject = null;
+            
+            shareView.classList.add('hidden');
+            callControls.classList.add('hidden');
+            setupView.classList.remove('hidden');
+            setStatus('Disconnected', '');
+
+            // Clean URL parameters without reloading page
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
     </script>
 </body>

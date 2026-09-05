@@ -1,295 +1,133 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-<rect width='100' height='100' rx='20' fill='%2358a6ff'/>
-<text x='50' y='70' font-size='70' text-anchor='middle' fill='black' font-family='Arial Black'>B</text>
-</svg>">
-<title>bdinkatomas-dev</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Inter, sans-serif;
-}
-
-body{
-    background:#0b0f17;
-    color:#e6e6e6;
-}
-
-/* 🔥 RELEASE BANNER (NEBULASURF v0.2) */
-.release-banner{
-    margin-top:70px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:20px;
-    padding:14px 20px;
-    background:linear-gradient(90deg,#1a1f2e,#111827);
-    border-bottom:1px solid rgba(255,255,255,0.08);
-}
-
-.release-text{
-    color:#cbd5e1;
-    font-size:14px;
-}
-
-.release-btn{
-    padding:8px 14px;
-    border-radius:10px;
-    background:#58a6ff;
-    color:black;
-    text-decoration:none;
-    font-weight:600;
-    font-size:13px;
-    transition:0.2s;
-}
-
-.release-btn:hover{
-    background:white;
-}
-
-/* NAV */
-nav{
-    position:fixed;
-    top:0;
-    width:100%;
-    display:flex;
-    justify-content:center;
-    padding:22px;
-    background:rgba(11,15,23,0.6);
-    backdrop-filter: blur(18px);
-    border-bottom:1px solid rgba(255,255,255,0.04);
-}
-
-nav a{
-    color:#9aa4b2;
-    margin:0 18px;
-    text-decoration:none;
-    font-size:14px;
-}
-
-nav a:hover{
-    color:white;
-}
-
-/* HERO */
-.hero{
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:0 20px;
-}
-
-.hero h1{
-    font-size:72px;
-    letter-spacing:-3px;
-    font-weight:700;
-}
-
-.hero p{
-    margin-top:18px;
-    max-width:650px;
-    color:#9aa4b2;
-    font-size:18px;
-    line-height:1.6;
-}
-
-/* SECTION */
-section{
-    padding:140px 10%;
-}
-
-h2{
-    font-size:40px;
-    letter-spacing:-1px;
-}
-
-.sub{
-    color:#9aa4b2;
-    margin-top:10px;
-}
-
-/* GRID */
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:24px;
-    margin-top:50px;
-}
-
-/* CARD */
-.card{
-    padding:28px;
-    border-radius:18px;
-    background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.06);
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-10px);
-    border-color:rgba(88,166,255,0.5);
-}
-
-/* BUTTON */
-.btn{
-    display:inline-block;
-    margin-top:18px;
-    padding:11px 16px;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,0.15);
-    color:white;
-    text-decoration:none;
-    font-size:14px;
-    transition:0.25s;
-}
-
-.btn:hover{
-    background:white;
-    color:black;
-}
-
-/* GITHUB ICON */
-.github-icon{
-    width:26px;
-    height:26px;
-    margin-bottom:10px;
-    fill:white;
-}
-
-/* FOOTER */
-footer{
-    text-align:center;
-    padding:70px;
-    color:#666;
-    border-top:1px solid rgba(255,255,255,0.05);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hlasový chat</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0f1115;
+            color: #f1f3f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .box {
+            background: #1a1d24;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #2d3139;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background: #1d4ed8; }
+        input {
+            width: 100%;
+            padding: 10px;
+            background: #0f1115;
+            border: 1px solid #2d3139;
+            color: white;
+            border-radius: 6px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .status { margin-top: 15px; font-size: 14px; color: #9ca3af; }
+    </style>
 </head>
-
 <body>
 
-<!-- 🔥 NEBULASURF RELEASE HEADER -->
-<div class="release-banner">
-    <div class="release-text">
-        🚀 XiridiumBrowser v0.2 je venku! Nový stable engine + rychlejší browsing
+    <div class="box">
+        <h2>Hlasový hovor</h2>
+        <div id="setupView">
+            <button onclick="startRoom()">Vytvořit místnost</button>
+        </div>
+        <div id="callView" style="display:none;">
+            <p>Odkaz pro druhého účastníka:</p>
+            <input type="text" id="shareLink" readonly onclick="this.select()">
+        </div>
+        <div class="status" id="status">Odpojeno</div>
     </div>
 
-    <a class="release-btn"
-       href="https://github.com/bdinkatomas-dev/XiridiumBrowser/releases/tag/tag2"
-       target="_blank">
-        Mrkni na to →
-    </a>
-</div>
+    <audio id="remoteAudio" autoplay></audio>
 
-<!-- NAV -->
-<nav>
-    <a href="#home">Domů</a>
-    <a href="#projects">Projekty</a>
-    <a href="#about">O mně</a>
-</nav>
+    <script>
+        const statusEl = document.getElementById('status');
+        const remoteAudio = document.getElementById('remoteAudio');
+        let peer, localStream;
 
-<!-- HERO -->
-<section class="hero" id="home">
-    <h1>bdinkatomas-dev</h1>
-    <p>
-        Student developer zaměřený na moderní web design, UI systémy a čisté digitální produkty.
-    </p>
-</section>
+        const urlParams = new URLSearchParams(window.location.search);
+        const joinId = urlParams.get('join');
 
-<!-- PROJECTS -->
-<section id="projects">
-    <h2>Projekty</h2>
-    <p class="sub">Výběr mých aktuálních projektů</p>
+        async function getMic() {
+            if (!localStream) {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            }
+            return localStream;
+        }
 
-    <div class="grid">
+        async function startRoom() {
+            statusEl.innerText = 'Inicializace...';
+            await getMic();
+            
+            peer = new Peer();
 
-        <!-- CARD 2 -->
-<div class="card">
-    <h3>Orvithium Labs</h3>
-    <p>Orvithium Labs je moje vývojové studio.</p>
+            peer.on('open', (id) => {
+                const link = window.location.origin + window.location.pathname + '?join=' + id;
+                document.getElementById('setupView').style.display = 'none';
+                document.getElementById('callView').style.display = 'block';
+                document.getElementById('shareLink').value = link;
+                statusEl.innerText = 'Čeká se na připojení druhé strany...';
+            });
 
-    <a class="btn" href="https://bdinkatomas-dev.github.io/Orvithium%20Labs/">
-        Otevřít projekt
-    </a>
-</div>
+            peer.on('call', (call) => {
+                call.answer(localStream);
+                setupCall(call);
+            });
+        }
 
-<!-- CARD 3 -->
-<div class="card">
-    <h3>Youtube</h3>
-    <p>o mém youtube kanálu</p>
+        // Pokud uživatel otevřel odkaz s ?join=ID
+        if (joinId) {
+            window.addEventListener('load', async () => {
+                statusEl.innerText = 'Připojování do místnosti...';
+                await getMic();
 
-    <a class="btn" href="https://bdinkatomas-dev.github.io/youtube/">
-        Otevřít projekt
-    </a>
-</div>
-        
-        <div class="card">
-            <h3>Kalkulačka průměru známek</h3>
-            <p>Výpočet váženého průměru známek</p>
-            <a class="btn" href="./kalkulacka-prumeru-znamek/">
-                Otevřít projekt
-            </a>
-        </div>
-         <div class="card">
-            <svg class="github-icon" viewBox="0 0 24 24">
-                <path d="M12 .5C5.7.5.8 5.4.8 11.7c0 5 3.2 9.2 7.7 10.7.6.1.8-.3.8-.6v-2.1c-3.1.7-3.7-1.3-3.7-1.3-.5-1.2-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.7 1.5 2.9 1.1.1-.8.4-1.3.7-1.6-2.5-.3-5.1-1.2-5.1-5.4 0-1.2.4-2.1 1.1-2.9-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 3 1.1a10 10 0 0 1 5.5 0c2.1-1.4 3-1.1 3-1.1.6 1.5.2 2.6.1 2.9.7.8 1.1 1.7 1.1 2.9 0 4.2-2.6 5.1-5.1 5.4.4.3.8 1 .8 2v3c0 .3.2.7.8.6 4.5-1.5 7.7-5.7 7.7-10.7C23.2 5.4 18.3.5 12 .5z"/>
-            </svg>
+                peer = new Peer();
 
-            <h3>GitHub</h3>
-            <p>Moje projekty, experimenty a kód</p>
+                peer.on('open', () => {
+                    const call = peer.call(joinId, localStream);
+                    setupCall(call);
+                });
+            });
+        }
 
-            <a class="btn" href="https://github.com/bdinkatomas-dev" target="_blank">
-                Otevřít GitHub
-            </a>
-        </div>
+        function setupCall(call) {
+            call.on('stream', (stream) => {
+                remoteAudio.srcObject = stream;
+                statusEl.innerText = 'Spojeno / Hovor probíhá';
+                statusEl.style.color = '#22c55e';
+            });
 
-    </div>
-</section>
-
-<section id="about">
-    <h2>O mně</h2>
-
-    <p class="sub">
-        Jsem student a samouk v oblasti webového vývoje.
-    </p>
-
-    <p class="sub">
-        Baví mě UI design, moderní weby a experimenty.
-    </p>
-
-    <p class="sub">
-        Tento web slouží jako moje portfolio.
-    </p>
-</section>
-
-<footer>
-    © 2026 bdinkatomas-dev<br>
-    Web naposledy aktualizován: 01.05.2026 20:00
-
-    <br><br>
-
-    <a href="https://www.youtube.com/@bdinkeckanal" target="_blank">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="42"
-             height="42"
-             viewBox="0 0 24 24"
-             fill="#ff0000"
-             style="transition:0.2s;">
-             
-            <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8zM9.7 15.5v-7l6.3 3.5-6.3 3.5z"/>
-        </svg>
-    </a>
-</footer>
+            call.on('close', () => {
+                statusEl.innerText = 'Hovor byl ukončen';
+            });
+        }
+    </script>
+</body>
+</html>

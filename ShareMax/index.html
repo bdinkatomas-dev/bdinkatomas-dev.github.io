@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShareMax — Ultra Fast P2P Share</title>
+    <title id="page-title">ShareMax — Ultra Fast P2P Share</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -74,7 +74,6 @@
     <div class="w-full max-w-md pb-2"></div>
 
     <script>
-        // Překlady pro CZ/EN
         let currentLang = 'cs';
         const dict = {
             cs: {
@@ -85,7 +84,6 @@
                 waiting: "Čeká se na příjemce...",
                 sending: "Odesílám soubor...",
                 sent: "Soubor úspěšně odeslán",
-                rxConnecting: "Navazuji přímé spojení...",
                 rxActive: "Spojení aktivní. Stahuji data...",
                 rxReady: (name) => `Soubor "${name}" je připraven!`,
                 downloadBtn: "Stáhnout soubor",
@@ -99,7 +97,6 @@
                 waiting: "Waiting for receiver...",
                 sending: "Sending file...",
                 sent: "File sent successfully",
-                rxConnecting: "Establishing direct connection...",
                 rxActive: "Connection active. Downloading data...",
                 rxReady: (name) => `File "${name}" is ready!`,
                 downloadBtn: "Download File",
@@ -124,12 +121,17 @@
         const params = new URLSearchParams(window.location.search);
         const peerId = params.get('p');
         const timestamp = params.get('t');
+        const fileNameParam = params.get('name');
 
-        // Kontrola 24h vypršení (86400000 ms = 24 hodin)
+        // Nastavení dynamického titulu hned při načtení, pokud je v URL parametr s názvem
+        if (fileNameParam) {
+            const decodedName = decodeURIComponent(fileNameParam);
+            document.title = `${decodedName} — ShareMax`;
+        }
+
         if (timestamp) {
             const createdTime = parseInt(timestamp, 10);
-            const now = Date.now();
-            if (now - createdTime > 86400000) {
+            if (Date.now() - createdTime > 86400000) {
                 document.getElementById('sender-view').classList.add('hidden');
                 document.getElementById('receiver-view').classList.remove('hidden');
                 document.getElementById('rx-status').textContent = dict[currentLang].expired;
@@ -187,9 +189,9 @@
             document.getElementById('file-name').textContent = file.name;
             document.getElementById('file-size').textContent = (file.size / (1024 * 1024)).toFixed(2) + " MB";
 
-            // Přidání časového razítka do URL pro ověření 24h limitu
             const nowTime = Date.now();
-            const shareUrl = `${window.location.origin}${window.location.pathname}?p=${myId}&t=${nowTime}`;
+            const encodedName = encodeURIComponent(file.name);
+            const shareUrl = `${window.location.origin}${window.location.pathname}?p=${myId}&t=${nowTime}&name=${encodedName}`;
             
             document.getElementById('qr-box').classList.remove('hidden');
             document.getElementById('share-url').value = shareUrl;

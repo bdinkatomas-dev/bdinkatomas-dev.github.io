@@ -3,171 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShareMax — Okamžité P2P sdílení</title>
+    <title>ShareMax — Ultra Fast P2P Share</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- PeerJS pro okamžité a rychlé P2P spojení -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col items-center justify-center p-4 selection:bg-emerald-500 selection:text-zinc-950">
+<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col items-center justify-between p-4 selection:bg-emerald-500 selection:text-zinc-950">
 
-    <div class="max-w-md w-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/80 rounded-3xl p-8 shadow-2xl shadow-emerald-950/20">
+    <!-- Top Bar: Lang Switcher -->
+    <div class="w-full max-w-md flex justify-end pt-2">
+        <button id="lang-btn" onclick="toggleLang()" class="text-xs font-semibold bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-3 py-1.5 rounded-full text-zinc-300 transition-all">
+            🌐 EN / <span class="text-emerald-400">CS</span>
+        </button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="max-w-md w-full bg-zinc-900/90 backdrop-blur-xl border border-zinc-800/80 rounded-3xl p-8 shadow-2xl shadow-emerald-950/30 my-auto">
         
-        <!-- Branding Header -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-zinc-950 font-bold text-2xl shadow-lg shadow-emerald-500/20 mb-4">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-zinc-950 font-bold text-xl shadow-lg shadow-emerald-500/20 mb-3">
                 ⚡
             </div>
-            <h1 class="text-3xl font-bold tracking-tight text-white">Share<span class="text-emerald-400">Max</span></h1>
-            <p id="brand-tagline" class="text-zinc-400 text-sm mt-1">Okamžitý P2P přenos souborů</p>
+            <h1 class="text-2xl font-bold tracking-tight text-white">Share<span class="text-emerald-400">Max</span></h1>
+            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">Okamžitý P2P přenos &bull; 24h auto-mazání</p>
         </div>
 
-        <!-- Odesílatel -->
-        <div id="sender-section">
-            <div id="drop-zone" class="group border-2 border-dashed border-zinc-800 hover:border-emerald-500/50 bg-zinc-950/50 hover:bg-zinc-950 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 mb-6">
+        <!-- Sender UI -->
+        <div id="sender-view">
+            <div id="drop-zone" class="border-2 border-dashed border-zinc-800 hover:border-emerald-500 bg-zinc-950/60 hover:bg-zinc-950 rounded-2xl p-6 text-center cursor-pointer transition-all mb-5">
                 <input type="file" id="file-input" class="hidden">
-                <div id="drop-text" class="space-y-3">
-                    <div class="w-12 h-12 mx-auto rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-emerald-400 group-hover:scale-110 transition-all duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-zinc-200">Vyber soubor pro sdílení</p>
-                        <p class="text-xs text-zinc-500 mt-1">Generování QR kódu proběhne okamžitě</p>
-                    </div>
+                <div id="drop-text" class="space-y-2">
+                    <p id="t-drop" class="font-semibold text-sm text-zinc-200">Klepni nebo přetáhni soubor</p>
+                    <p id="t-subdrop" class="text-[11px] text-zinc-500">Odkaz vyprší automaticky za 24 hodin</p>
                 </div>
                 <div id="file-info" class="hidden space-y-1">
-                    <p id="file-name" class="font-semibold text-emerald-400 truncate max-w-xs mx-auto"></p>
-                    <p id="file-size" class="text-xs text-zinc-500"></p>
+                    <p id="file-name" class="font-semibold text-emerald-400 text-sm truncate max-w-xs mx-auto"></p>
+                    <p id="file-size" class="text-[11px] text-zinc-500"></p>
                 </div>
             </div>
 
-            <div id="qr-container" class="hidden flex flex-col items-center bg-zinc-950 border border-zinc-800/80 p-5 rounded-2xl mb-6 space-y-4">
-                <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider">Naskenuj pro stažení</p>
-                <div id="qrcode" class="bg-white p-3 rounded-xl shadow-inner"></div>
-                <input type="text" id="share-link-input" readonly class="w-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 px-3 py-2.5 rounded-xl text-center select-all">
+            <div id="qr-box" class="hidden flex flex-col items-center bg-zinc-950 border border-zinc-800/80 p-4 rounded-2xl mb-4 space-y-3">
+                <div id="qrcode" class="bg-white p-2.5 rounded-xl"></div>
+                <input type="text" id="share-url" readonly class="w-full bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300 px-3 py-2 rounded-xl text-center select-all focus:outline-none">
             </div>
         </div>
 
-        <!-- Příjemce -->
-        <div id="receiver-section" class="hidden text-center space-y-4">
-            <div class="bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl space-y-4">
-                <p class="text-xs text-zinc-400 uppercase tracking-wider">Příchozí soubor</p>
-                <p id="incoming-status" class="font-semibold text-emerald-400 text-sm">Navazuje se rychlé P2P spojení...</p>
-                <a id="download-btn" class="hidden w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-3.5 px-4 rounded-xl transition-all duration-300 block text-center shadow-lg shadow-emerald-500/20">
+        <!-- Receiver UI -->
+        <div id="receiver-view" class="hidden text-center space-y-4">
+            <div class="bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl space-y-3">
+                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji přímé spojení...</p>
+                <a id="dl-btn" class="hidden w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-3 px-4 rounded-xl transition-all block text-center text-sm shadow-lg shadow-emerald-500/20">
                     Stáhnout soubor
                 </a>
             </div>
         </div>
 
-        <!-- Status bar -->
-        <div class="mt-2 text-center">
-            <span id="status-box" class="inline-flex items-center gap-2 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+        <!-- Status Bar -->
+        <div class="text-center">
+            <span id="status-badge" class="inline-flex items-center gap-2 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Připraveno
+                <span id="t-ready">Připraveno</span>
             </span>
         </div>
     </div>
 
+    <!-- Footer Spacer -->
+    <div class="w-full max-w-md pb-2"></div>
+
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetPeerId = urlParams.get('peer');
+        // Překlady pro CZ/EN
+        let currentLang = 'cs';
+        const dict = {
+            cs: {
+                tagline: "Okamžitý P2P přenos • 24h auto-mazání",
+                drop: "Klepni nebo přetáhni soubor",
+                subdrop: "Odkaz vyprší automaticky za 24 hodin",
+                ready: "Připraveno",
+                waiting: "Čeká se na příjemce...",
+                sending: "Odesílám soubor...",
+                sent: "Soubor úspěšně odeslán",
+                rxConnecting: "Navazuji přímé spojení...",
+                rxActive: "Spojení aktivní. Stahuji data...",
+                rxReady: (name) => `Soubor "${name}" je připraven!`,
+                downloadBtn: "Stáhnout soubor",
+                expired: "Platnost odkazu vypršela (po 24h)."
+            },
+            en: {
+                tagline: "Instant P2P Transfer • 24h Auto-Expire",
+                drop: "Click or drop a file here",
+                subdrop: "Link expires automatically after 24 hours",
+                ready: "Ready",
+                waiting: "Waiting for receiver...",
+                sending: "Sending file...",
+                sent: "File sent successfully",
+                rxConnecting: "Establishing direct connection...",
+                rxActive: "Connection active. Downloading data...",
+                rxReady: (name) => `File "${name}" is ready!`,
+                downloadBtn: "Download File",
+                expired: "Link has expired (24h limit reached)."
+            }
+        };
 
-        const senderSection = document.getElementById('sender-section');
-        const receiverSection = document.getElementById('receiver-section');
-        const statusBox = document.getElementById('status-box');
-        const brandTagline = document.getElementById('brand-tagline');
+        function toggleLang() {
+            currentLang = currentLang === 'cs' ? 'en' : 'cs';
+            updateTexts();
+        }
 
-        // Inicializace PeerJS uzlu
+        function updateTexts() {
+            const t = dict[currentLang];
+            document.getElementById('t-tagline').textContent = t.tagline;
+            document.getElementById('t-drop').textContent = t.drop;
+            document.getElementById('t-subdrop').textContent = t.subdrop;
+            document.getElementById('t-ready').textContent = t.ready;
+            document.getElementById('dl-btn').textContent = t.downloadBtn;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const peerId = params.get('p');
+        const timestamp = params.get('t');
+
+        // Kontrola 24h vypršení (86400000 ms = 24 hodin)
+        if (timestamp) {
+            const createdTime = parseInt(timestamp, 10);
+            const now = Date.now();
+            if (now - createdTime > 86400000) {
+                document.getElementById('sender-view').classList.add('hidden');
+                document.getElementById('receiver-view').classList.remove('hidden');
+                document.getElementById('rx-status').textContent = dict[currentLang].expired;
+                throw new Error("Link expired");
+            }
+        }
+
         const peer = new Peer();
+        const senderView = document.getElementById('sender-view');
+        const receiverView = document.getElementById('receiver-view');
+        const statusBadge = document.getElementById('status-badge');
 
         peer.on('open', (id) => {
-            if (targetPeerId) {
-                // Režim příjemce: automaticky se připojí k odesílateli
-                senderSection.classList.add('hidden');
-                receiverSection.classList.remove('hidden');
-                brandTagline.textContent = "Stahování souboru napřímo";
-                
-                const conn = peer.connect(targetPeerId);
+            if (peerId) {
+                senderView.classList.add('hidden');
+                receiverView.classList.remove('hidden');
+
+                const conn = peer.connect(peerId, { reliable: true });
                 
                 conn.on('open', () => {
-                    document.getElementById('incoming-status').textContent = "Spojení navázáno! Čekám na data...";
+                    document.getElementById('rx-status').textContent = dict[currentLang].rxActive;
                 });
 
-                conn.on('data', (data) => {
-                    if (data.file) {
-                        const blob = new Blob([data.file]);
-                        const url = URL.createObjectURL(blob);
-                        const downloadBtn = document.getElementById('download-btn');
-                        
-                        downloadBtn.href = url;
-                        downloadBtn.download = data.name;
-                        downloadBtn.classList.remove('hidden');
-                        
-                        document.getElementById('incoming-status').textContent = `Soubor "${data.name}" je připraven ke stažení!`;
-                        statusBox.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Přenos dokončen';
+                conn.on('data', (packet) => {
+                    if (packet.file) {
+                        const url = URL.createObjectURL(new Blob([packet.file]));
+                        const btn = document.getElementById('dl-btn');
+                        btn.href = url;
+                        btn.download = packet.name;
+                        btn.classList.remove('hidden');
+                        document.getElementById('rx-status').textContent = dict[currentLang].rxReady(packet.name);
+                        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].ready}`;
                     }
                 });
             } else {
-                // Režim odesílatele
                 const dropZone = document.getElementById('drop-zone');
                 const fileInput = document.getElementById('file-input');
-                const dropText = document.getElementById('drop-text');
-                const fileInfo = document.getElementById('file-info');
-                const fileName = document.getElementById('file-name');
-                const fileSize = document.getElementById('file-size');
-                const qrContainer = document.getElementById('qr-container');
+                
+                dropZone.onclick = () => fileInput.click();
+                fileInput.onchange = (e) => { if (e.target.files[0]) initShare(e.target.files[0], id); };
 
-                dropZone.addEventListener('click', () => fileInput.click());
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length) handleFile(e.target.files[0]);
-                });
-
-                function handleFile(file) {
-                    dropText.classList.add('hidden');
-                    fileInfo.classList.remove('hidden');
-                    fileName.textContent = file.name;
-                    fileSize.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
-
-                    // Okamžité vytvoření URL s ID odesílatele
-                    const fullUrl = `${window.location.origin}${window.location.pathname}?peer=${id}`;
-
-                    qrContainer.classList.remove('hidden');
-                    document.getElementById('qrcode').innerHTML = "";
-                    
-                    new QRCode(document.getElementById("qrcode"), {
-                        text: fullUrl,
-                        width: 148,
-                        height: 148,
-                        colorDark: "#09090b",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.M
-                    });
-
-                    document.getElementById('share-link-input').value = fullUrl;
-                    statusBox.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Čeká se na připojení příjemce...';
-
-                    // Naslouchání na příchozí připojení od příjemce
-                    peer.on('connection', (conn) => {
-                        statusBox.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Příjemce připojen, odesílám soubor...';
-                        
-                        conn.on('open', () => {
-                            // Okamžité odeslání souboru přes P2P kanál
-                            conn.send({
-                                file: file,
-                                name: file.name
-                            });
-                            statusBox.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Soubor odeslán';
-                        });
-                    });
-                }
+                dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-500'); };
+                dropZone.ondragleave = () => dropZone.classList.remove('border-emerald-500');
+                dropZone.ondrop = (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-emerald-500');
+                    if (e.dataTransfer.files[0]) initShare(e.dataTransfer.files[0], id);
+                };
             }
         });
+
+        function initShare(file, myId) {
+            document.getElementById('drop-text').classList.add('hidden');
+            document.getElementById('file-info').classList.remove('hidden');
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-size').textContent = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+
+            // Přidání časového razítka do URL pro ověření 24h limitu
+            const nowTime = Date.now();
+            const shareUrl = `${window.location.origin}${window.location.pathname}?p=${myId}&t=${nowTime}`;
+            
+            document.getElementById('qr-box').classList.remove('hidden');
+            document.getElementById('share-url').value = shareUrl;
+            
+            document.getElementById('qrcode').innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: shareUrl, width: 130, height: 130, colorDark: "#09090b", colorLight: "#ffffff"
+            });
+
+            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${dict[currentLang].waiting}`;
+
+            peer.on('connection', (conn) => {
+                statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${dict[currentLang].sending}`;
+                conn.on('open', () => {
+                    conn.send({ file: file, name: file.name });
+                    statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].sent}`;
+                });
+            });
+        }
     </script>
 </body>
 </html>

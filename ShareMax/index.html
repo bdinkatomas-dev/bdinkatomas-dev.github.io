@@ -25,7 +25,7 @@
                 ⚡
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-white">Share<span class="text-emerald-400">Max</span></h1>
-            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">Router-Bypassing P2P Engine</p>
+            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">TURN-Enabled P2P Engine</p>
         </div>
 
         <div id="sender-view">
@@ -49,7 +49,7 @@
 
         <div id="receiver-view" class="hidden text-center space-y-4">
             <div class="bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl space-y-3">
-                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji průchod routerem...</p>
+                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji zabezpečený tunel...</p>
                 <a id="dl-btn" class="hidden w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-3 px-4 rounded-xl transition-all block text-center text-sm shadow-lg shadow-emerald-500/20">
                     Stáhnout soubor
                 </a>
@@ -77,8 +77,7 @@
                 rxActive: "Spojení navázáno, stahuji...",
                 rxReady: (name) => `Soubor "${name}" je stažen!`,
                 downloadBtn: "Uložit soubor",
-                expired: "Odkaz vypršel.",
-                error: "Chyba spojení (firewall/router blokuje)."
+                expired: "Odkaz vypršel."
             }
         };
 
@@ -89,16 +88,25 @@
 
         if (fileNameParam) document.title = `${decodeURIComponent(fileNameParam)} — ShareMax`;
 
-        // STUN servery nutné pro překlad adres mezi dvěma různými routery
+        // P2P Inicializace s STUN i TURN servery pro obcházení přísných routerů
         const peer = new Peer({
             config: {
                 'iceServers': [
                     { urls: 'stun:stun.l.google.com:19302' },
                     { urls: 'stun:stun1.l.google.com:19302' },
-                    { urls: 'stun:stun2.l.google.com:19302' }
+                    {
+                        urls: 'turn:openrelay.metered.ca:80',
+                        username: 'openrelayproject',
+                        credential: 'openrelayproject'
+                    },
+                    {
+                        urls: 'turns:openrelay.metered.ca:443',
+                        username: 'openrelayproject',
+                        credential: 'openrelayproject'
+                    }
                 ]
             },
-            debug: 2 // Vypíše do konzole (F12) detailní stav WebRTC
+            debug: 2
         });
 
         peer.on('error', (err) => {
@@ -177,7 +185,6 @@
                 statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${dict[currentLang].sending}`;
                 
                 conn.on('open', () => {
-                    // Pro takhle malý soubor pošleme rovnou celé pole přes standardní JSON/BinaryPack balíček
                     file.arrayBuffer().then(buffer => {
                         conn.send({ file: buffer, name: file.name });
                         statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].sent}`;

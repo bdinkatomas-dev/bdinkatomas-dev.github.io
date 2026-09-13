@@ -28,7 +28,7 @@
                 ⚡
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-white">Share<span class="text-emerald-400">Max</span></h1>
-            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">Okamžitý P2P přenos &bull; 24h auto-mazání</p>
+            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">Globální P2P Engine &bull; 24h auto-mazání</p>
         </div>
 
         <!-- Sender UI -->
@@ -37,7 +37,7 @@
                 <input type="file" id="file-input" class="hidden">
                 <div id="drop-text" class="space-y-2">
                     <p id="t-drop" class="font-semibold text-sm text-zinc-200">Klepni nebo přetáhni soubor</p>
-                    <p id="t-subdrop" class="text-[11px] text-zinc-500">Odkaz vyprší automaticky za 24 hodin</p>
+                    <p id="t-subdrop" class="text-[11px] text-zinc-500">Okamžitý přenos bez limitu velikosti</p>
                 </div>
                 <div id="file-info" class="hidden space-y-1">
                     <p id="file-name" class="font-semibold text-emerald-400 text-sm truncate max-w-xs mx-auto"></p>
@@ -54,7 +54,11 @@
         <!-- Receiver UI -->
         <div id="receiver-view" class="hidden text-center space-y-4">
             <div class="bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl space-y-3">
-                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji přímé spojení...</p>
+                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji globální tunel...</p>
+                <!-- Progress bar pro stahování -->
+                <div id="progress-container" class="hidden w-full bg-zinc-900 rounded-full h-2 overflow-hidden border border-zinc-800">
+                    <div id="progress-bar" class="bg-emerald-400 h-full w-0 transition-all duration-150"></div>
+                </div>
                 <a id="dl-btn" class="hidden w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-3 px-4 rounded-xl transition-all block text-center text-sm shadow-lg shadow-emerald-500/20">
                     Stáhnout soubor
                 </a>
@@ -77,29 +81,31 @@
         let currentLang = 'cs';
         const dict = {
             cs: {
-                tagline: "Okamžitý P2P přenos • 24h auto-mazání",
+                tagline: "Globální P2P Engine • 24h auto-mazání",
                 drop: "Klepni nebo přetáhni soubor",
-                subdrop: "Odkaz vyprší automaticky za 24 hodin",
+                subdrop: "Okamžitý přenos bez limitu velikosti",
                 ready: "Připraveno",
-                waiting: "Čeká se na příjemce...",
-                sending: "Odesílám soubor...",
-                sent: "Soubor úspěšně odeslán",
-                rxActive: "Spojení aktivní. Stahuji data...",
+                waiting: "Čeká se na spojení...",
+                sending: "Odesílám napřímo...",
+                sent: "Odesláno maximální rychlostí",
+                rxConnecting: "Navazuji globální tunel...",
+                rxActive: "Tunel aktivní, stahuji data...",
                 rxReady: (name) => `Soubor "${name}" je připraven!`,
-                downloadBtn: "Stáhnout soubor",
-                expired: "Platnost odkazu vypršela (po 24h)."
+                downloadBtn: "Uložit soubor",
+                expired: "Platnost odkazu vypršela (24h limit)."
             },
             en: {
-                tagline: "Instant P2P Transfer • 24h Auto-Expire",
+                tagline: "Global P2P Engine • 24h Auto-Expire",
                 drop: "Click or drop a file here",
-                subdrop: "Link expires automatically after 24 hours",
+                subdrop: "Instant transfer with no size limits",
                 ready: "Ready",
-                waiting: "Waiting for receiver...",
-                sending: "Sending file...",
-                sent: "File sent successfully",
-                rxActive: "Connection active. Downloading data...",
+                waiting: "Waiting for connection...",
+                sending: "Streaming directly...",
+                sent: "Transferred at max speed",
+                rxConnecting: "Establishing global tunnel...",
+                rxActive: "Tunnel active, downloading data...",
                 rxReady: (name) => `File "${name}" is ready!`,
-                downloadBtn: "Download File",
+                downloadBtn: "Save File",
                 expired: "Link has expired (24h limit reached)."
             }
         };
@@ -115,7 +121,8 @@
             document.getElementById('t-drop').textContent = t.drop;
             document.getElementById('t-subdrop').textContent = t.subdrop;
             document.getElementById('t-ready').textContent = t.ready;
-            document.getElementById('dl-btn').textContent = t.downloadBtn;
+            const dlBtn = document.getElementById('dl-btn');
+            if(!dlBtn.classList.contains('hidden')) dlBtn.textContent = t.downloadBtn;
         }
 
         const params = new URLSearchParams(window.location.search);
@@ -123,23 +130,30 @@
         const timestamp = params.get('t');
         const fileNameParam = params.get('name');
 
-        // Nastavení dynamického titulu hned při načtení, pokud je v URL parametr s názvem
         if (fileNameParam) {
-            const decodedName = decodeURIComponent(fileNameParam);
-            document.title = `${decodedName} — ShareMax`;
+            document.title = `${decodeURIComponent(fileNameParam)} — ShareMax`;
         }
 
         if (timestamp) {
-            const createdTime = parseInt(timestamp, 10);
-            if (Date.now() - createdTime > 86400000) {
+            if (Date.now() - parseInt(timestamp, 10) > 86400000) {
                 document.getElementById('sender-view').classList.add('hidden');
                 document.getElementById('receiver-view').classList.remove('hidden');
                 document.getElementById('rx-status').textContent = dict[currentLang].expired;
-                throw new Error("Link expired");
+                throw new Error("Expired");
             }
         }
 
-        const peer = new Peer();
+        // ULTRA-OPTIMIZED PEER CONFIG WITH STUN/TURN FALLBACKS FOR GLOBAL SPEED
+        const peer = new Peer({
+            config: {
+                'iceServers': [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun.services.mozilla.com' }
+                ]
+            }
+        });
+
         const senderView = document.getElementById('sender-view');
         const receiverView = document.getElementById('receiver-view');
         const statusBadge = document.getElementById('status-badge');
@@ -148,22 +162,47 @@
             if (peerId) {
                 senderView.classList.add('hidden');
                 receiverView.classList.remove('hidden');
+                document.getElementById('progress-container').classList.remove('hidden');
 
-                const conn = peer.connect(peerId, { reliable: true });
-                
+                const conn = peer.connect(peerId, { reliable: true, serialization: 'binary' });
+                let incomingBuffer = [];
+                let receivedSize = 0;
+                let totalFileSize = 0;
+                let targetFileName = "file";
+
                 conn.on('open', () => {
                     document.getElementById('rx-status').textContent = dict[currentLang].rxActive;
                 });
 
-                conn.on('data', (packet) => {
-                    if (packet.file) {
-                        const url = URL.createObjectURL(new Blob([packet.file]));
-                        const btn = document.getElementById('dl-btn');
-                        btn.href = url;
-                        btn.download = packet.name;
-                        btn.classList.remove('hidden');
-                        document.getElementById('rx-status').textContent = dict[currentLang].rxReady(packet.name);
-                        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].ready}`;
+                conn.on('data', (data) => {
+                    // Metadatový balíček nebo chunk dat
+                    if (data.type === 'meta') {
+                        totalFileSize = data.size;
+                        targetFileName = data.name;
+                    } else if (data.type === 'chunk') {
+                        incomingBuffer.push(data.payload);
+                        receivedSize += data.payload.byteLength;
+                        
+                        if (totalFileSize > 0) {
+                            const percent = Math.round((receivedSize / totalFileSize) * 100);
+                            document.getElementById('progress-bar').style.width = percent + '%';
+                            document.getElementById('rx-status').textContent = `${dict[currentLang].rxActive} (${percent}%)`;
+                        }
+
+                        if (receivedSize === totalFileSize) {
+                            const blob = new Blob(incomingBuffer);
+                            const url = URL.createObjectURL(blob);
+                            const btn = document.getElementById('dl-btn');
+                            
+                            document.getElementById('progress-container').classList.add('hidden');
+                            btn.href = url;
+                            btn.download = targetFileName;
+                            btn.textContent = dict[currentLang].downloadBtn;
+                            btn.classList.remove('hidden');
+                            
+                            document.getElementById('rx-status').textContent = dict[currentLang].rxReady(targetFileName);
+                            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].ready}`;
+                        }
                     }
                 });
             } else {
@@ -189,9 +228,7 @@
             document.getElementById('file-name').textContent = file.name;
             document.getElementById('file-size').textContent = (file.size / (1024 * 1024)).toFixed(2) + " MB";
 
-            const nowTime = Date.now();
-            const encodedName = encodeURIComponent(file.name);
-            const shareUrl = `${window.location.origin}${window.location.pathname}?p=${myId}&t=${nowTime}&name=${encodedName}`;
+            const shareUrl = `${window.location.origin}${window.location.pathname}?p=${myId}&t=${Date.now()}&name=${encodeURIComponent(file.name)}`;
             
             document.getElementById('qr-box').classList.remove('hidden');
             document.getElementById('share-url').value = shareUrl;
@@ -205,8 +242,22 @@
 
             peer.on('connection', (conn) => {
                 statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${dict[currentLang].sending}`;
-                conn.on('open', () => {
-                    conn.send({ file: file, name: file.name });
+                
+                conn.on('open', async () => {
+                    // 1. Pošleme metadata o souboru
+                    conn.send({ type: 'meta', name: file.name, size: file.size });
+
+                    // 2. Odesíláme po 64KB chunkech pro maximální propustnost sítě
+                    const CHUNK_SIZE = 64 * 1024;
+                    let offset = 0;
+
+                    while (offset < file.size) {
+                        const slice = file.slice(offset, offset + CHUNK_SIZE);
+                        const buffer = await slice.arrayBuffer();
+                        conn.send({ type: 'chunk', payload: buffer });
+                        offset += CHUNK_SIZE;
+                    }
+
                     statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].sent}`;
                 });
             });

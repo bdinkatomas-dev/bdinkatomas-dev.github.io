@@ -12,32 +12,28 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col items-center justify-between p-4 selection:bg-emerald-500 selection:text-zinc-950">
 
-    <!-- Top Bar: Lang Switcher -->
     <div class="w-full max-w-md flex justify-end pt-2">
         <button id="lang-btn" onclick="toggleLang()" class="text-xs font-semibold bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-3 py-1.5 rounded-full text-zinc-300 transition-all">
             🌐 EN / <span class="text-emerald-400">CS</span>
         </button>
     </div>
 
-    <!-- Main Card -->
     <div class="max-w-md w-full bg-zinc-900/90 backdrop-blur-xl border border-zinc-800/80 rounded-3xl p-8 shadow-2xl shadow-emerald-950/30 my-auto">
         
-        <!-- Header -->
         <div class="text-center mb-6">
             <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-zinc-950 font-bold text-xl shadow-lg shadow-emerald-500/20 mb-3">
                 ⚡
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-white">Share<span class="text-emerald-400">Max</span></h1>
-            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">Globální P2P Engine &bull; 24h auto-mazání</p>
+            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">Instant Local &bull; Global P2P Engine</p>
         </div>
 
-        <!-- Sender UI -->
         <div id="sender-view">
             <div id="drop-zone" class="border-2 border-dashed border-zinc-800 hover:border-emerald-500 bg-zinc-950/60 hover:bg-zinc-950 rounded-2xl p-6 text-center cursor-pointer transition-all mb-5">
                 <input type="file" id="file-input" class="hidden">
                 <div id="drop-text" class="space-y-2">
                     <p id="t-drop" class="font-semibold text-sm text-zinc-200">Klepni nebo přetáhni soubor</p>
-                    <p id="t-subdrop" class="text-[11px] text-zinc-500">Okamžitý přenos bez limitu velikosti</p>
+                    <p id="t-subdrop" class="text-[11px] text-zinc-500">Okamžitý přenos bez čekání</p>
                 </div>
                 <div id="file-info" class="hidden space-y-1">
                     <p id="file-name" class="font-semibold text-emerald-400 text-sm truncate max-w-xs mx-auto"></p>
@@ -51,13 +47,11 @@
             </div>
         </div>
 
-        <!-- Receiver UI -->
         <div id="receiver-view" class="hidden text-center space-y-4">
             <div class="bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl space-y-3">
-                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji globální tunel...</p>
-                <!-- Progress bar pro stahování -->
+                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji bleskové spojení...</p>
                 <div id="progress-container" class="hidden w-full bg-zinc-900 rounded-full h-2 overflow-hidden border border-zinc-800">
-                    <div id="progress-bar" class="bg-emerald-400 h-full w-0 transition-all duration-150"></div>
+                    <div id="progress-bar" class="bg-emerald-400 h-full w-0 transition-all duration-75"></div>
                 </div>
                 <a id="dl-btn" class="hidden w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-3 px-4 rounded-xl transition-all block text-center text-sm shadow-lg shadow-emerald-500/20">
                     Stáhnout soubor
@@ -65,7 +59,6 @@
             </div>
         </div>
 
-        <!-- Status Bar -->
         <div class="text-center">
             <span id="status-badge" class="inline-flex items-center gap-2 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -74,55 +67,41 @@
         </div>
     </div>
 
-    <!-- Footer Spacer -->
     <div class="w-full max-w-md pb-2"></div>
 
     <script>
         let currentLang = 'cs';
         const dict = {
             cs: {
-                tagline: "Globální P2P Engine • 24h auto-mazání",
+                tagline: "Instant Local & Global P2P Engine",
                 drop: "Klepni nebo přetáhni soubor",
-                subdrop: "Okamžitý přenos bez limitu velikosti",
+                subdrop: "Okamžitý přenos bez čekání",
                 ready: "Připraveno",
-                waiting: "Čeká se na spojení...",
-                sending: "Odesílám napřímo...",
-                sent: "Odesláno maximální rychlostí",
-                rxConnecting: "Navazuji globální tunel...",
-                rxActive: "Tunel aktivní, stahuji data...",
-                rxReady: (name) => `Soubor "${name}" je připraven!`,
+                waiting: "Čekám na protistranu...",
+                sending: "Sypu data plnou rychlostí...",
+                sent: "Hotovo, přeneseno",
+                rxActive: "Stahuji maximální rychlostí...",
+                rxReady: (name) => `Soubor "${name}" je kompletní!`,
                 downloadBtn: "Uložit soubor",
-                expired: "Platnost odkazu vypršela (24h limit)."
+                expired: "Platnost odkazu vypršela."
             },
             en: {
-                tagline: "Global P2P Engine • 24h Auto-Expire",
+                tagline: "Instant Local & Global P2P Engine",
                 drop: "Click or drop a file here",
-                subdrop: "Instant transfer with no size limits",
+                subdrop: "Instant transfer with no waiting",
                 ready: "Ready",
-                waiting: "Waiting for connection...",
-                sending: "Streaming directly...",
-                sent: "Transferred at max speed",
-                rxConnecting: "Establishing global tunnel...",
-                rxActive: "Tunnel active, downloading data...",
-                rxReady: (name) => `File "${name}" is ready!`,
+                waiting: "Waiting for peer...",
+                sending: "Streaming at max speed...",
+                sent: "Transfer complete",
+                rxActive: "Downloading at max speed...",
+                rxReady: (name) => `File "${name}" is complete!`,
                 downloadBtn: "Save File",
-                expired: "Link has expired (24h limit reached)."
+                expired: "Link expired."
             }
         };
 
         function toggleLang() {
             currentLang = currentLang === 'cs' ? 'en' : 'cs';
-            updateTexts();
-        }
-
-        function updateTexts() {
-            const t = dict[currentLang];
-            document.getElementById('t-tagline').textContent = t.tagline;
-            document.getElementById('t-drop').textContent = t.drop;
-            document.getElementById('t-subdrop').textContent = t.subdrop;
-            document.getElementById('t-ready').textContent = t.ready;
-            const dlBtn = document.getElementById('dl-btn');
-            if(!dlBtn.classList.contains('hidden')) dlBtn.textContent = t.downloadBtn;
         }
 
         const params = new URLSearchParams(window.location.search);
@@ -134,25 +113,15 @@
             document.title = `${decodeURIComponent(fileNameParam)} — ShareMax`;
         }
 
-        if (timestamp) {
-            if (Date.now() - parseInt(timestamp, 10) > 86400000) {
-                document.getElementById('sender-view').classList.add('hidden');
-                document.getElementById('receiver-view').classList.remove('hidden');
-                document.getElementById('rx-status').textContent = dict[currentLang].expired;
-                throw new Error("Expired");
-            }
+        if (timestamp && Date.now() - parseInt(timestamp, 10) > 86400000) {
+            document.getElementById('sender-view').classList.add('hidden');
+            document.getElementById('receiver-view').classList.remove('hidden');
+            document.getElementById('rx-status').textContent = dict[currentLang].expired;
+            throw new Error("Expired");
         }
 
-        // ULTRA-OPTIMIZED PEER CONFIG WITH STUN/TURN FALLBACKS FOR GLOBAL SPEED
-        const peer = new Peer({
-            config: {
-                'iceServers': [
-                    { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'stun:stun1.l.google.com:19302' },
-                    { urls: 'stun:stun.services.mozilla.com' }
-                ]
-            }
-        });
+        // Čistá inicializace bez zbytečných externích STUN brzd pro lokální/blízké sítě
+        const peer = new Peer();
 
         const senderView = document.getElementById('sender-view');
         const receiverView = document.getElementById('receiver-view');
@@ -164,7 +133,8 @@
                 receiverView.classList.remove('hidden');
                 document.getElementById('progress-container').classList.remove('hidden');
 
-                const conn = peer.connect(peerId, { reliable: true, serialization: 'binary' });
+                // Důležité: spolehlivé spojení bez binární serializační tísně
+                const conn = peer.connect(peerId, { reliable: true });
                 let incomingBuffer = [];
                 let receivedSize = 0;
                 let totalFileSize = 0;
@@ -175,7 +145,6 @@
                 });
 
                 conn.on('data', (data) => {
-                    // Metadatový balíček nebo chunk dat
                     if (data.type === 'meta') {
                         totalFileSize = data.size;
                         targetFileName = data.name;
@@ -189,7 +158,7 @@
                             document.getElementById('rx-status').textContent = `${dict[currentLang].rxActive} (${percent}%)`;
                         }
 
-                        if (receivedSize === totalFileSize) {
+                        if (receivedSize >= totalFileSize) {
                             const blob = new Blob(incomingBuffer);
                             const url = URL.createObjectURL(blob);
                             const btn = document.getElementById('dl-btn');
@@ -244,16 +213,21 @@
                 statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${dict[currentLang].sending}`;
                 
                 conn.on('open', async () => {
-                    // 1. Pošleme metadata o souboru
                     conn.send({ type: 'meta', name: file.name, size: file.size });
 
-                    // 2. Odesíláme po 64KB chunkech pro maximální propustnost sítě
-                    const CHUNK_SIZE = 64 * 1024;
+                    // Větší chunky (256 KB) pro rychlý lokální přenos bez zbytečného přetěžování fronty
+                    const CHUNK_SIZE = 256 * 1024;
                     let offset = 0;
 
                     while (offset < file.size) {
                         const slice = file.slice(offset, offset + CHUNK_SIZE);
                         const buffer = await slice.arrayBuffer();
+                        
+                        // Ochrana proti přetečení bufferu datového kanálu
+                        while (conn.dataChannel && conn.dataChannel.bufferedAmount > 16 * 1024 * 1024) {
+                            await new Promise(resolve => setTimeout(resolve, 10));
+                        }
+
                         conn.send({ type: 'chunk', payload: buffer });
                         offset += CHUNK_SIZE;
                     }

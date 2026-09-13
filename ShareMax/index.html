@@ -25,7 +25,7 @@
                 ⚡
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-white">Share<span class="text-emerald-400">Max</span></h1>
-            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">TURN-Enabled P2P Engine</p>
+            <p id="t-tagline" class="text-zinc-400 text-xs mt-1">Xirsys TURN-Enabled P2P Engine</p>
         </div>
 
         <div id="sender-view">
@@ -49,7 +49,7 @@
 
         <div id="receiver-view" class="hidden text-center space-y-4">
             <div class="bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl space-y-3">
-                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Navazuji zabezpečený tunel...</p>
+                <p id="rx-status" class="font-semibold text-emerald-400 text-sm">Získávám TURN servery...</p>
                 <a id="dl-btn" class="hidden w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-3 px-4 rounded-xl transition-all block text-center text-sm shadow-lg shadow-emerald-500/20">
                     Stáhnout soubor
                 </a>
@@ -59,7 +59,7 @@
         <div class="text-center">
             <span id="status-badge" class="inline-flex items-center gap-2 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="t-ready">Připraveno</span>
+                <span id="t-ready">Načítám...</span>
             </span>
         </div>
     </div>
@@ -88,82 +88,93 @@
 
         if (fileNameParam) document.title = `${decodeURIComponent(fileNameParam)} — ShareMax`;
 
-        // P2P Inicializace s STUN i TURN servery pro obcházení přísných routerů
-        const peer = new Peer({
-            config: {
-                'iceServers': [
-                    { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'stun:stun1.l.google.com:19302' },
-                    {
-                        urls: 'turn:openrelay.metered.ca:80',
-                        username: 'openrelayproject',
-                        credential: 'openrelayproject'
-                    },
-                    {
-                        urls: 'turns:openrelay.metered.ca:443',
-                        username: 'openrelayproject',
-                        credential: 'openrelayproject'
-                    }
-                ]
-            },
-            debug: 2
-        });
+        // Xirsys přihlašovací údaje
+        const XIRSYS_IDENT = "Toms";
+        const XIRSYS_SECRET = "47336566-af99-11f1-b471-0242ac130002";
+        const XIRSYS_CHANNEL = "channel480fd500";
 
-        peer.on('error', (err) => {
-            console.error("PeerJS Error:", err);
-            document.getElementById('rx-status').textContent = "Chyba: " + err.type;
-        });
+        async function startApp() {
+            let iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
 
-        const senderView = document.getElementById('sender-view');
-        const receiverView = document.getElementById('receiver-view');
-        const statusBadge = document.getElementById('status-badge');
-
-        peer.on('open', (id) => {
-            if (peerId) {
-                senderView.classList.add('hidden');
-                receiverView.classList.remove('hidden');
-
-                const conn = peer.connect(peerId, { reliable: true });
-                
-                conn.on('open', () => {
-                    document.getElementById('rx-status').textContent = dict[currentLang].rxActive;
-                });
-
-                conn.on('error', (err) => {
-                    console.error("Connection error:", err);
-                    document.getElementById('rx-status').textContent = "Chyba datového kanálu";
-                });
-
-                conn.on('data', (packet) => {
-                    if (packet.file) {
-                        const blob = new Blob([packet.file]);
-                        const url = URL.createObjectURL(blob);
-                        const btn = document.getElementById('dl-btn');
-                        btn.href = url;
-                        btn.download = packet.name;
-                        btn.classList.remove('hidden');
-                        document.getElementById('rx-status').textContent = dict[currentLang].rxReady(packet.name);
-                        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].ready}`;
+            try {
+                // Dynamické získání ověřených TURN/STUN serverů přímo od Xirsys
+                const response = await fetch(`https://global.xirsys.net/_turn/${XIRSYS_CHANNEL}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(`${XIRSYS_IDENT}:${XIRSYS_SECRET}`)
                     }
                 });
-            } else {
-                const dropZone = document.getElementById('drop-zone');
-                const fileInput = document.getElementById('file-input');
-                
-                dropZone.onclick = () => fileInput.click();
-                fileInput.onchange = (e) => { if (e.target.files[0]) initShare(e.target.files[0], id); };
-
-                dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-500'); };
-                dropZone.ondragleave = () => dropZone.classList.remove('border-emerald-500');
-                dropZone.ondrop = (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('border-emerald-500');
-                    if (e.dataTransfer.files[0]) initShare(e.dataTransfer.files[0], id);
-                };
+                const data = await response.json();
+                if (data && data.v && data.v.iceServers) {
+                    iceServers = data.v.iceServers;
+                }
+            } catch (err) {
+                console.warn("Nepodařilo se načíst Xirsys TURN servery, používám záložní STUN.", err);
             }
-        });
 
-        function initShare(file, myId) {
+            const peer = new Peer({
+                config: { iceServers: iceServers },
+                debug: 2
+            });
+
+            peer.on('error', (err) => {
+                console.error("PeerJS Error:", err);
+                document.getElementById('rx-status').textContent = "Chyba: " + err.type;
+            });
+
+            const senderView = document.getElementById('sender-view');
+            const receiverView = document.getElementById('receiver-view');
+            const statusBadge = document.getElementById('status-badge');
+
+            document.getElementById('t-ready').textContent = dict[currentLang].ready;
+
+            peer.on('open', (id) => {
+                if (peerId) {
+                    senderView.classList.add('hidden');
+                    receiverView.classList.remove('hidden');
+
+                    const conn = peer.connect(peerId, { reliable: true });
+                    
+                    conn.on('open', () => {
+                        document.getElementById('rx-status').textContent = dict[currentLang].rxActive;
+                    });
+
+                    conn.on('error', (err) => {
+                        console.error("Connection error:", err);
+                        document.getElementById('rx-status').textContent = "Chyba datového kanálu";
+                    });
+
+                    conn.on('data', (packet) => {
+                        if (packet.file) {
+                            const blob = new Blob([packet.file]);
+                            const url = URL.createObjectURL(blob);
+                            const btn = document.getElementById('dl-btn');
+                            btn.href = url;
+                            btn.download = packet.name;
+                            btn.classList.remove('hidden');
+                            document.getElementById('rx-status').textContent = dict[currentLang].rxReady(packet.name);
+                            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${dict[currentLang].ready}`;
+                        }
+                    });
+                } else {
+                    const dropZone = document.getElementById('drop-zone');
+                    const fileInput = document.getElementById('file-input');
+                    
+                    dropZone.onclick = () => fileInput.click();
+                    fileInput.onchange = (e) => { if (e.target.files[0]) initShare(e.target.files[0], id, peer); };
+
+                    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-500'); };
+                    dropZone.ondragleave = () => dropZone.classList.remove('border-emerald-500');
+                    dropZone.ondrop = (e) => {
+                        e.preventDefault();
+                        dropZone.classList.remove('border-emerald-500');
+                        if (e.dataTransfer.files[0]) initShare(e.dataTransfer.files[0], id, peer);
+                    };
+                }
+            });
+        }
+
+        function initShare(file, myId, peerInstance) {
             document.getElementById('drop-text').classList.add('hidden');
             document.getElementById('file-info').classList.remove('hidden');
             document.getElementById('file-name').textContent = file.name;
@@ -179,9 +190,10 @@
                 text: shareUrl, width: 130, height: 130, colorDark: "#09090b", colorLight: "#ffffff"
             });
 
+            const statusBadge = document.getElementById('status-badge');
             statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${dict[currentLang].waiting}`;
 
-            peer.on('connection', (conn) => {
+            peerInstance.on('connection', (conn) => {
                 statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${dict[currentLang].sending}`;
                 
                 conn.on('open', () => {
@@ -196,6 +208,9 @@
                 });
             });
         }
+
+        // Spuštění aplikace po načtení skriptu s Xirsys autentizací
+        startApp();
     </script>
 </body>
 </html>

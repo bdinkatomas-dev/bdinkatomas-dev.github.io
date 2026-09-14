@@ -3,8 +3,8 @@ let aktualniPtak = null;
 let skore = 0;
 let cisloOtazky = 0;
 const celkemOtazek = 10;
+let aktivniAudio = null;
 
-// Odkazy na prvky na stránce
 const uvodniObrazovka = document.getElementById("uvodni-obrazovka");
 const herniObrazovka = document.getElementById("herni-obrazovka");
 const konecnaObrazovka = document.getElementById("konecna-obrazovka");
@@ -36,7 +36,6 @@ function schovejVse() {
     zdrojeModal.classList.add("hidden");
 }
 
-// Spuštění kvízu
 btnStart.addEventListener("click", () => {
     skore = 0;
     cisloOtazky = 0;
@@ -47,6 +46,11 @@ btnStart.addEventListener("click", () => {
 });
 
 btnZpetMenu.addEventListener("click", () => {
+    if (aktivniAudio) {
+        aktivniAudio.pause();
+        aktivniAudio.currentTime = 0;
+        aktivniAudio = null;
+    }
     schovejVse();
     uvodniObrazovka.classList.remove("hidden");
 });
@@ -56,6 +60,11 @@ btnZnovu.addEventListener("click", () => {
 });
 
 btnOtevritZdroje.addEventListener("click", () => {
+    if (aktivniAudio) {
+        aktivniAudio.pause();
+        aktivniAudio.currentTime = 0;
+        aktivniAudio = null;
+    }
     naplnZdroje();
     schovejVse();
     zdrojeModal.classList.remove("hidden");
@@ -66,11 +75,15 @@ btnZavritZdroje.addEventListener("click", () => {
     uvodniObrazovka.classList.remove("hidden");
 });
 
-// Generování další otázky
 function dalsiOtazka() {
+    if (aktivniAudio) {
+        aktivniAudio.pause();
+        aktivniAudio.currentTime = 0;
+        aktivniAudio = null;
+    }
+
     cisloOtazky++;
 
-    // Kvíz má 10 otázek, nebo skončí, pokud by došli ptáci
     if (cisloOtazky > celkemOtazek || pouzitiPtaci.length >= ptaciData.length) {
         ukonciKviz();
         return;
@@ -83,23 +96,18 @@ function dalsiOtazka() {
     spanCisloOtazky.textContent = `Otázka: ${cisloOtazky} / ${celkemOtazek}`;
     spanAktualniSkore.textContent = `Skóre: ${skore}`;
 
-    // Vyber náhodného ptáka, který ještě v tomto kole nebyl
     let dostupniPtaci = ptaciData.filter(p => !pouzitiPtaci.includes(p.id));
     let nahodneCislo = Math.floor(Math.random() * dostupniPtaci.length);
     aktualniPtak = dostupniPtaci[nahodneCislo];
 
-    // Poznamenej si ID, aby se neopakoval
     pouzitiPtaci.push(aktualniPtak.id);
 
-    // Připrav 3 špatné odpovědi z ostatních ptáků
     let ostatniPtaci = ptaciData.filter(p => p.id !== aktualniPtak.id);
     promichejPole(ostatniPtaci);
     let vybraneMoznosti = [aktualniPtak, ostatniPtaci[0], ostatniPtaci[1], ostatniPtaci[2]];
     
-    // Zamíchej pořadí tlačítek
     promichejPole(vybraneMoznosti);
 
-    // Vykresli tlačítka
     odpovediBox.innerHTML = "";
     vybraneMoznosti.forEach(ptak => {
         let tlacitko = document.createElement("button");
@@ -110,15 +118,18 @@ function dalsiOtazka() {
     });
 }
 
-// Přehrání zvuku (poradí si i s mezerami v názvu souboru, např. Apus apus.mp3)
 btnPrehrat.addEventListener("click", () => {
-    let audio = new Audio(aktualniPtak.audio);
-    audio.play().catch(error => {
+    if (aktivniAudio) {
+        aktivniAudio.pause();
+        aktivniAudio.currentTime = 0;
+    }
+
+    aktivniAudio = new Audio(aktualniPtak.audio);
+    aktivniAudio.play().catch(error => {
         alert("Zvukový soubor se nepodařilo přehrát. Zkontrolujte, zda soubor '" + aktualniPtak.audio + "' existuje ve složce audio.");
     });
 });
 
-// Vyhodnocení odpovědi
 function vyhodnotOdpoved(zvoleneId, tlacitko) {
     let všechnaTlacitka = odpovediBox.querySelectorAll("button");
     všechnaTlacitka.forEach(btn => btn.disabled = true);
@@ -136,7 +147,6 @@ function vyhodnotOdpoved(zvoleneId, tlacitko) {
         zpravaVysledek.textContent = "Bohužel, to je špatně.";
         zpravaVysledek.className = "zprava chyba";
         
-        // Ukáže správnou odpověď
         všechnaTlacitka.forEach(btn => {
             if (btn.textContent === aktualniPtak.nazev) {
                 btn.classList.add("spravne");
@@ -146,7 +156,6 @@ function vyhodnotOdpoved(zvoleneId, tlacitko) {
 
     spanAktualniSkore.textContent = `Skóre: ${skore}`;
 
-    // Zobrazí fotku a název správného ptáka
     ptakFoto.src = aktualniPtak.foto;
     ptakNazev.textContent = aktualniPtak.nazev;
 
@@ -160,12 +169,16 @@ btnDalsi.addEventListener("click", () => {
 });
 
 function ukonciKviz() {
+    if (aktivniAudio) {
+        aktivniAudio.pause();
+        aktivniAudio.currentTime = 0;
+        aktivniAudio = null;
+    }
     schovejVse();
     konecnaObrazovka.classList.remove("hidden");
     konecneSkoreText.textContent = `Získali jste ${skore} bodů z ${celkemOtazek} možných!`;
 }
 
-// Pomocná funkce pro náhodné zamíchání
 function promichejPole(pole) {
     for (let i = pole.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
@@ -173,7 +186,6 @@ function promichejPole(pole) {
     }
 }
 
-// Automatické naplnění stránky se zdroji
 function naplnZdroje() {
     seznamZdroju.innerHTML = "";
     ptaciData.forEach(ptak => {

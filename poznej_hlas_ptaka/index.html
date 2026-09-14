@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poznej ptáka podle hlasu – Noc vědy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <div class="container">
+        <!-- Hlavička aplikace -->
+        <header>
+            <h1>🐦 Poznej ptáka podle hlasu</h1>
+            <p>Noc vědy na gymnáziu</p>
+        </header>
+
+        <!-- 1. Úvodní obrazovka -->
+        <div id="uvodni-obrazovka" class="panel">
+            <h2>Vítejte v ptačím kvízu!</h2>
+            <p>Otestujte svůj sluch. Uslyšíte hlas ptáka a vaším úkolem je poznat, o jaký druh se jedná. Čeká vás celkem 10 otázek.</p>
+            <button id="btn-start" class="btn primary">Spustit kvíz</button>
+            <br><br>
+            <button id="btn-otevrit-zdroje" class="btn secondary">Zdroje a licence fotek</button>
+        </div>
+
+        <!-- 2. Herní obrazovka -->
+        <div id="herni-obrazovka" class="panel hidden">
+            <div class="info-bar">
+                <span id="cislo-otazky">Otázka: 1 / 10</span>
+                <span id="aktualni-skore">Skóre: 0</span>
+            </div>
+
+            <div class="audio-box">
+                <p>Poslechněte si hlas:</p>
+                <button id="btn-prehrat" class="btn audio-btn">🔊 Přehrát hlas</button>
+            </div>
+
+            <div id="odpovedi-box" class="grid-odpovedi"></div>
+
+            <div id="vysledek-otazky" class="hidden">
+                <div id="zprava-vysledek" class="zprava"></div>
+                <div class="info-ptak">
+                    <img id="ptak-foto" src="" alt="Fotografie ptáka">
+                    <h3 id="ptak-nazev"></h3>
+                </div>
+                <button id="btn-dalsi" class="btn primary">Další otázka</button>
+            </div>
+        </div>
+
+        <!-- 3. Závěrečná obrazovka -->
+        <div id="konecna-obrazovka" class="panel hidden">
+            <h2>Kvíz je u konce!</h2>
+            <p id="konecne-skore-text" class="velky-text"></p>
+            <button id="btn-znovu" class="btn primary">Hrát znovu</button>
+            <br><br>
+            <button id="btn-zpet-menu" class="btn secondary">Zpět do menu</button>
+        </div>
+
+        <!-- 4. Stránka / modální okno pro Zdroje a licence -->
+        <div id="zdroje-modal" class="panel hidden">
+            <h2>Zdroje a licence fotografií</h2>
+            <p>Seznam autorů a licencí fotografií použitých v aplikaci:</p>
+            <div id="seznam-zdroju"></div>
+            <br>
+            <button id="btn-zavrit-zdroje" class="btn secondary">Zpět do menu</button>
+        </div>
+    </div>
+
+    <!-- Důležité: nejprve data.js, potom app.js -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

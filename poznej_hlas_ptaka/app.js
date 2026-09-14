@@ -125,6 +125,12 @@ btnPrehrat.addEventListener("click", () => {
     }
 
     aktivniAudio = new Audio(aktualniPtak.audio);
+    
+    // Odříznutí ticha na začátku – přeskočí prvních 0.5 sekundy (můžeš číslo upravit)
+    aktivniAudio.addEventListener('loadedmetadata', () => {
+        aktivniAudio.currentTime = 0.5;
+    });
+
     aktivniAudio.play().catch(error => {
         alert("Zvukový soubor se nepodařilo přehrát. Zkontrolujte, zda soubor '" + aktualniPtak.audio + "' existuje ve složce audio.");
     });

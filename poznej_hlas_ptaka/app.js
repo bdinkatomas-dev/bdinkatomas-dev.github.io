@@ -126,7 +126,7 @@ btnPrehrat.addEventListener("click", () => {
 
     aktivniAudio = new Audio(aktualniPtak.audio);
     
-    // Odříznutí ticha na začátku – přeskočí prvních 0.5 sekundy (můžeš číslo upravit)
+    // Odříznutí ticha na začátku – přeskočí prvních 0.5 sekundy
     aktivniAudio.addEventListener('loadedmetadata', () => {
         aktivniAudio.currentTime = 0.5;
     });
@@ -182,7 +182,29 @@ function ukonciKviz() {
     }
     schovejVse();
     konecnaObrazovka.classList.remove("hidden");
-    konecneSkoreText.textContent = `Získali jste ${skore} bodů z ${celkemOtazek} možných!`;
+
+    let titul = "";
+    let popis = "";
+
+    if (skore <= 3) {
+        titul = "Začínající ornitolog";
+        popis = "S ptačí říší se teprve seznamuješ. Každý rozpoznaný hlas je dobrým základem pro další pozorování.";
+    } else if (skore <= 6) {
+        titul = "Pozorný posluchač";
+        popis = "Máš dobrý sluch a základní přehled o našich běžných druzích ptáků.";
+    } else if (skore <= 8) {
+        titul = "Ptačí znalec";
+        popis = "Skvělý výsledek. Ptačí hlasy ti nejsou cizí a v terénu se hned tak neztratíš.";
+    } else {
+        titul = "Mistr ptačích hlasů";
+        popis = "Absolutní špička. Sluchovou zkoušku jsi zvládl/a s naprostým přehledem.";
+    }
+
+    konecneSkoreText.innerHTML = `
+        <div style="font-size: 1.1rem; margin-bottom: 8px;">Získané skóre: <strong>${skore} / ${celkemOtazek}</strong></div>
+        <div style="font-size: 1.3rem; font-weight: 600; color: var(--primary); margin: 15px 0 5px 0;">${titul}</div>
+        <div style="font-size: 0.95rem; color: var(--text-muted);">${popis}</div>
+    `;
 }
 
 function promichejPole(pole) {

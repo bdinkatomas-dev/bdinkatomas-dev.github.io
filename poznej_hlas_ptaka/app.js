@@ -5,12 +5,18 @@ let cisloOtazky = 0;
 const celkemOtazek = 10;
 let aktivniAudio = null;
 
+// Proměnné pro režim „Poznávej“ (procházení katalogu)
+let indexPoznavej = 0;
+
+// Odkazy na prvky na stránce
 const uvodniObrazovka = document.getElementById("uvodni-obrazovka");
 const herniObrazovka = document.getElementById("herni-obrazovka");
 const konecnaObrazovka = document.getElementById("konecna-obrazovka");
+const poznavejObrazovka = document.getElementById("poznavej-obrazovka"); // Nová obrazovka pro poznávání
 const zdrojeModal = document.getElementById("zdroje-modal");
 
 const btnStart = document.getElementById("btn-start");
+const btnPoznavejMenu = document.getElementById("btn-poznavej-menu"); // Tlačítko v menu
 const btnPrehrat = document.getElementById("btn-prehrat");
 const odpovediBox = document.getElementById("odpovedi-box");
 const vysledekOtazky = document.getElementById("vysledek-otazky");
@@ -18,6 +24,15 @@ const zpravaVysledek = document.getElementById("zprava-vysledek");
 const ptakFoto = document.getElementById("ptak-foto");
 const ptakNazev = document.getElementById("ptak-nazev");
 const btnDalsi = document.getElementById("btn-dalsi");
+
+// Prvky pro režim Poznávej
+const poznavejFoto = document.getElementById("poznavej-foto");
+const poznavejNazev = document.getElementById("poznavej-nazev");
+const poznavejInfoZdroje = document.getElementById("poznavej-info-zdroje");
+const btnPoznavejAudio = document.getElementById("btn-poznavej-audio");
+const btnPoznavejPredchozi = document.getElementById("btn-poznavej-predchozi");
+const btnPoznavejDalsi = document.getElementById("btn-poznavej-dalsi");
+const btnPoznavejZpet = document.getElementById("btn-poznavej-zpet");
 
 const spanCisloOtazky = document.getElementById("cislo-otazky");
 const spanAktualniSkore = document.getElementById("aktualni-skore");
@@ -33,9 +48,11 @@ function schovejVse() {
     uvodniObrazovka.classList.add("hidden");
     herniObrazovka.classList.add("hidden");
     konecnaObrazovka.classList.add("hidden");
+    if (poznavejObrazovka) poznavejObrazovka.classList.add("hidden");
     zdrojeModal.classList.add("hidden");
 }
 
+// Spuštění testu (kvízu)
 btnStart.addEventListener("click", () => {
     skore = 0;
     cisloOtazky = 0;
@@ -45,12 +62,27 @@ btnStart.addEventListener("click", () => {
     dalsiOtazka();
 });
 
+// Spuštění režimu „Poznávej“
+if (btnPoznavejMenu) {
+    btnPoznavejMenu.addEventListener("click", () => {
+        zastavAudio();
+        indexPoznavej = 0;
+        schovejVse();
+        poznavejObrazovka.classList.remove("hidden");
+        aktualizujPoznavejKarta();
+    });
+}
+
+if (btnPoznavejZpet) {
+    btnPoznavejZpet.addEventListener("click", () => {
+        zastavAudio();
+        schovejVse();
+        uvodniObrazovka.classList.remove("hidden");
+    });
+}
+
 btnZpetMenu.addEventListener("click", () => {
-    if (aktivniAudio) {
-        aktivniAudio.pause();
-        aktivniAudio.currentTime = 0;
-        aktivniAudio = null;
-    }
+    zastavAudio();
     schovejVse();
     uvodniObrazovka.classList.remove("hidden");
 });
@@ -60,11 +92,7 @@ btnZnovu.addEventListener("click", () => {
 });
 
 btnOtevritZdroje.addEventListener("click", () => {
-    if (aktivniAudio) {
-        aktivniAudio.pause();
-        aktivniAudio.currentTime = 0;
-        aktivniAudio = null;
-    }
+    zastavAudio();
     naplnZdroje();
     schovejVse();
     zdrojeModal.classList.remove("hidden");
@@ -75,12 +103,56 @@ btnZavritZdroje.addEventListener("click", () => {
     uvodniObrazovka.classList.remove("hidden");
 });
 
-function dalsiOtazka() {
+// Pomocná funkce pro bezpečné zastavení audia
+function zastavAudio() {
     if (aktivniAudio) {
         aktivniAudio.pause();
         aktivniAudio.currentTime = 0;
         aktivniAudio = null;
     }
+}
+
+// --- LOGIKA PRO REŽIM „POZNÁVEJ“ ---
+function aktualizujPoznavejKarta() {
+    zastavAudio();
+    let ptak = ptaciData[indexPoznavej];
+
+    poznavejFoto.src = ptak.foto;
+    poznavejNazev.textContent = `${indexPoznavej + 1}. ${ptak.nazev}`;
+    poznavejInfoZdroje.textContent = `Foto: ${ptak.autorFoto} (${ptak.licenceFoto})`;
+}
+
+if (btnPoznavejDalsi) {
+    btnPoznavejDalsi.addEventListener("click", () => {
+        indexPoznavej = (indexPoznavej + 1) % ptaciData.length;
+        aktualizujPoznavejKarta();
+    });
+}
+
+if (btnPoznavejPredchozi) {
+    btnPoznavejPredchozi.addEventListener("click", () => {
+        indexPoznavej = (indexPoznavej - 1 + ptaciData.length) % ptaciData.length;
+        aktualizujPoznavejKarta();
+    });
+}
+
+if (btnPoznavejAudio) {
+    btnPoznavejAudio.addEventListener("click", () => {
+        zastavAudio();
+        let ptak = ptaciData[indexPoznavej];
+        aktivniAudio = new Audio(ptak.audio);
+        aktivniAudio.addEventListener('loadedmetadata', () => {
+            aktivniAudio.currentTime = 0.5;
+        });
+        aktivniAudio.play().catch(error => {
+            alert("Zvukový soubor se nepodařilo přehrát.");
+        });
+    });
+}
+
+// --- LOGIKA PRO HLAVNÍ KVÍZ (TEST) ---
+function dalsiOtazka() {
+    zastavAudio();
 
     cisloOtazky++;
 
@@ -93,7 +165,7 @@ function dalsiOtazka() {
     odpovediBox.classList.remove("hidden");
     btnPrehrat.disabled = false;
 
-    spanCisloOtazky.textContent = `Otázka: ${cisloOtazky} / ${celkemOtazek}`;
+    spanCisloOtazky.textContent = `Pták ${cisloOtazky} / ${celkemOtazek}`;
     spanAktualniSkore.textContent = `Skóre: ${skore}`;
 
     let dostupniPtaci = ptaciData.filter(p => !pouzitiPtaci.includes(p.id));
@@ -119,20 +191,16 @@ function dalsiOtazka() {
 }
 
 btnPrehrat.addEventListener("click", () => {
-    if (aktivniAudio) {
-        aktivniAudio.pause();
-        aktivniAudio.currentTime = 0;
-    }
+    zastavAudio();
 
     aktivniAudio = new Audio(aktualniPtak.audio);
     
-    // Odříznutí ticha na začátku – přeskočí prvních 0.5 sekundy
     aktivniAudio.addEventListener('loadedmetadata', () => {
         aktivniAudio.currentTime = 0.5;
     });
 
     aktivniAudio.play().catch(error => {
-        alert("Zvukový soubor se nepodařilo přehrát. Zkontrolujte, zda soubor '" + aktualniPtak.audio + "' existuje ve složce audio.");
+        alert("Zvukový soubor se nepodařilo přehrát.");
     });
 });
 
@@ -146,11 +214,11 @@ function vyhodnotOdpoved(zvoleneId, tlacitko) {
     if (jeSpravne) {
         skore++;
         tlacitko.classList.add("spravne");
-        zpravaVysledek.textContent = "Správně! Výborně!";
+        zpravaVysledek.innerHTML = "✓ Správně!";
         zpravaVysledek.className = "zprava ok";
     } else {
         tlacitko.classList.add("spatne");
-        zpravaVysledek.textContent = "Bohužel, to je špatně.";
+        zpravaVysledek.innerHTML = `✗ To není on. Správná odpověď je <strong>${aktualniPtak.nazev}</strong>.`;
         zpravaVysledek.className = "zprava chyba";
         
         všechnaTlacitka.forEach(btn => {
@@ -175,11 +243,7 @@ btnDalsi.addEventListener("click", () => {
 });
 
 function ukonciKviz() {
-    if (aktivniAudio) {
-        aktivniAudio.pause();
-        aktivniAudio.currentTime = 0;
-        aktivniAudio = null;
-    }
+    zastavAudio();
     schovejVse();
     konecnaObrazovka.classList.remove("hidden");
 
@@ -188,7 +252,7 @@ function ukonciKviz() {
 
     if (skore <= 3) {
         titul = "Začínající ornitolog";
-        popis = "S ptačí říší se teprve seznamuješ. Každý rozpoznaný hlas je dobrým základem pro další pozorování.";
+        popis = "S ptačí říší se teprve seznamuješ. Zkus si projít režim „Poznávej“ a zkus to znovu!";
     } else if (skore <= 6) {
         titul = "Pozorný posluchač";
         popis = "Máš dobrý sluch a základní přehled o našich běžných druzích ptáků.";
@@ -201,9 +265,9 @@ function ukonciKviz() {
     }
 
     konecneSkoreText.innerHTML = `
-        <div style="font-size: 1.1rem; margin-bottom: 8px;">Získané skóre: <strong>${skore} / ${celkemOtazek}</strong></div>
-        <div style="font-size: 1.3rem; font-weight: 600; color: var(--primary); margin: 15px 0 5px 0;">${titul}</div>
-        <div style="font-size: 0.95rem; color: var(--text-muted);">${popis}</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 5px;">${skore} / ${celkemOtazek}</div>
+        <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-main); margin: 10px 0;">${titul} 🦉</div>
+        <div style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.4;">${popis}</div>
     `;
 }
 
@@ -220,7 +284,8 @@ function naplnZdroje() {
         let polozka = document.createElement("div");
         polozka.classList.add("zdroj-polozka");
         polozka.innerHTML = `<strong>${ptak.nazev}</strong><br>
-                             Autor foto: ${ptak.autorFoto} (${ptak.licenceFoto})`;
+                             Autor foto: ${ptak.autorFoto}<br>
+                             Licence: ${ptak.licenceFoto}`;
         seznamZdroju.appendChild(polozka);
     });
 }

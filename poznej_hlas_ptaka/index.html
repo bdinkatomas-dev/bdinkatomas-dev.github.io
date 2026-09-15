@@ -3,72 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poznej ptáka podle hlasu – Noc vědy</title>
+    <title>Poznej ptáka podle hlasu | Noc vědy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <!-- Hlavička aplikace -->
-        <header>
-            <h1>🐦 Poznej ptáka podle hlasu</h1>
-            <p>Noc vědy na gymnáziu</p>
-        </header>
-
-        <!-- 1. Úvodní obrazovka -->
+        
+        <!-- --- 1. ÚVODNÍ OBRAZOVKA --- -->
         <div id="uvodni-obrazovka" class="panel">
-            <h2>Vítejte v ptačím kvízu!</h2>
-            <p>Otestujte svůj sluch. Uslyšíte hlas ptáka a vaším úkolem je poznat, o jaký druh se jedná. Čeká vás celkem 10 otázek.</p>
-            <button id="btn-start" class="btn primary">Spustit kvíz</button>
-            <br><br>
-            <button id="btn-otevrit-zdroje" class="btn secondary">Zdroje a licence fotek</button>
+            <header>
+                <!-- Vlastní minimalistická SVG ikona ptáka -->
+                <svg class="logo-svg" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+                <h1>Poznej ptáka podle hlasu</h1>
+                <p>Dokážeš poznat, kdo právě zpívá?</p>
+            </header>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                <button id="btn-start" class="btn primary">▶ ZAČÍT KVÍZ (TEST)</button>
+                <button id="btn-poznavej-menu" class="btn secondary">📖 Poznávej ptáky (Učení)</button>
+                <button id="btn-otevrit-zdroje" class="btn secondary">Zdroje a licence</button>
+            </div>
+
+            <footer style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <p style="font-size: 0.85rem; margin-bottom: 5px;">Noc vědy 2026 – Městské víceleté gymnázium Klobouky u Brna</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">
+                    Vytvořil <a href="https://github.com/bdinkatomas-dev" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 500;">Tomáš Bdinka</a> pro <a href="https://www.gymklob.cz/" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 500;">Měvg Klobouky u Brna</a>
+                </p>
+            </footer>
         </div>
 
-        <!-- 2. Herní obrazovka -->
+        <!-- --- 2. HERNÍ OBRAZOVKA (KVÍZ) --- -->
         <div id="herni-obrazovka" class="panel hidden">
             <div class="info-bar">
-                <span id="cislo-otazky">Otázka: 1 / 10</span>
+                <span id="cislo-otazky">Pták 1 / 10</span>
                 <span id="aktualni-skore">Skóre: 0</span>
             </div>
 
-            <div class="audio-box">
-                <p>Poslechněte si hlas:</p>
-                <button id="btn-prehrat" class="btn audio-btn">🔊 Přehrát hlas</button>
+            <h2>Poznej zpěv ptáka</h2>
+            
+            <button id="btn-prehrat" class="btn audio-btn" style="margin: 15px 0;">
+                🔊 PŘEHRÁT HLAS
+            </button>
+
+            <div id="odpovedi-box" class="grid-odpovedi">
+                <!-- Sem se dynamicky generují tlačítka s možnostmi -->
             </div>
 
-            <div id="odpovedi-box" class="grid-odpovedi"></div>
-
+            <!-- Panel po odpovědi -->
             <div id="vysledek-otazky" class="hidden">
                 <div id="zprava-vysledek" class="zprava"></div>
+                
                 <div class="info-ptak">
                     <img id="ptak-foto" src="" alt="Fotografie ptáka">
-                    <h3 id="ptak-nazev"></h3>
+                    <h3 id="ptak-nazev">Název ptáka</h3>
                 </div>
-                <button id="btn-dalsi" class="btn primary">Další otázka</button>
+
+                <button id="btn-dalsi" class="btn primary" style="margin-top: 15px;">DALŠÍ PTÁK →</button>
+            </div>
+
+            <button id="btn-zpet-menu" class="btn secondary" style="margin-top: 20px; font-size: 0.85rem; padding: 8px;">← Zpět do menu</button>
+        </div>
+
+        <!-- --- 3. REŽIM „POZNÁVEJ“ (UČENÍ) --- -->
+        <div id="poznavej-obrazovka" class="panel hidden">
+            <h2>Poznávej ptáky</h2>
+            <p>Prohlédni si fotografii, poslechni hlas a seznam se s druhem.</p>
+            
+            <div class="info-ptak" style="margin-top: 15px;">
+                <img id="poznavej-foto" src="" alt="Pták">
+                <h3 id="poznavej-nazev" style="margin-top: 10px;">Název ptáka</h3>
+                <p id="poznavej-info-zdroje" style="font-size: 0.85rem; margin-top: 5px; color: var(--text-muted);"></p>
+            </div>
+
+            <button id="btn-poznavej-audio" class="btn audio-btn" style="margin: 15px 0;">🔊 Přehrát hlas</button>
+
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button id="btn-poznavej-predchozi" class="btn secondary">← Předchozí</button>
+                <button id="btn-poznavej-dalsi" class="btn primary">Další →</button>
+            </div>
+
+            <button id="btn-poznavej-zpet" class="btn secondary" style="margin-top: 15px;">← Zpět do menu</button>
+        </div>
+
+        <!-- --- 4. KONEČNÁ OBRAZOVKA (VÝSLEDEK) --- -->
+        <div id="konecna-obrazovka" class="panel hidden">
+            <h2>Konec kvízu</h2>
+            <div id="konecne-skore-text" style="margin: 20px 0;">
+                <!-- Sem se vygeneruje hodnocení -->
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                <button id="btn-znovu" class="btn primary">HRÁT ZNOVU</button>
+                <button id="btn-zpet-menu-konec" class="btn secondary" onclick="location.reload();">Zpět do menu</button>
             </div>
         </div>
 
-        <!-- 3. Závěrečná obrazovka -->
-        <div id="konecna-obrazovka" class="panel hidden">
-            <h2>Kvíz je u konce!</h2>
-            <p id="konecne-skore-text" class="velky-text"></p>
-            <button id="btn-znovu" class="btn primary">Hrát znovu</button>
-            <br><br>
-            <button id="btn-zpet-menu" class="btn secondary">Zpět do menu</button>
+        <!-- --- 5. MODÁLNÍ OKNO: ZDROJE A LICENCE --- -->
+        <div id="zdroje-modal" class="panel hidden">
+            <h2>Zdroje a licence</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 15px;">Přehled použitých materiálů pro aplikaci:</p>
+            
+            <div id="seznam-zdroju">
+                <!-- Sem se dynamicky nahrají zdroje z data.js -->
+            </div>
+
+            <button id="btn-zavrit-zdroje" class="btn primary" style="margin-top: 20px;">Zavřít</button>
         </div>
 
-        <!-- 4. Stránka / modální okno pro Zdroje a licence -->
-        <div id="zdroje-modal" class="panel hidden">
-            <h2>Zdroje a licence fotografií</h2>
-            <p>Seznam autorů a licencí fotografií použitých v aplikaci:</p>
-            <div id="seznam-zdroju"></div>
-            <br>
-            <button id="btn-zavrit-zdroje" class="btn secondary">Zpět do menu</button>
-        </div>
     </div>
 
-    <!-- Důležité: nejprve data.js, potom app.js -->
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <!-- Načtení datové sady a skriptů -->
+    <script src="data.js?v=2"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poznej ptáka podle hlasu | Noc vědy</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
@@ -13,7 +13,6 @@
         <!-- --- 1. ÚVODNÍ OBRAZOVKA --- -->
         <div id="uvodni-obrazovka" class="panel">
             <header>
-                <!-- Vlastní minimalistická SVG ikona ptáka -->
                 <svg class="logo-svg" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
@@ -48,11 +47,8 @@
                 🔊 PŘEHRÁT HLAS
             </button>
 
-            <div id="odpovedi-box" class="grid-odpovedi">
-                <!-- Sem se dynamicky generují tlačítka s možnostmi -->
-            </div>
+            <div id="odpovedi-box" class="grid-odpovedi"></div>
 
-            <!-- Panel po odpovědi -->
             <div id="vysledek-otazky" class="hidden">
                 <div id="zprava-vysledek" class="zprava"></div>
                 
@@ -91,9 +87,7 @@
         <!-- --- 4. KONEČNÁ OBRAZOVKA (VÝSLEDEK) --- -->
         <div id="konecna-obrazovka" class="panel hidden">
             <h2>Konec kvízu</h2>
-            <div id="konecne-skore-text" style="margin: 20px 0;">
-                <!-- Sem se vygeneruje hodnocení -->
-            </div>
+            <div id="konecne-skore-text" style="margin: 20px 0;"></div>
 
             <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
                 <button id="btn-znovu" class="btn primary">HRÁT ZNOVU</button>
@@ -106,17 +100,14 @@
             <h2>Zdroje a licence</h2>
             <p style="font-size: 0.9rem; margin-bottom: 15px;">Přehled použitých materiálů pro aplikaci:</p>
             
-            <div id="seznam-zdroju">
-                <!-- Sem se dynamicky nahrají zdroje z data.js -->
-            </div>
+            <div id="seznam-zdroju"></div>
 
             <button id="btn-zavrit-zdroje" class="btn primary" style="margin-top: 20px;">Zavřít</button>
         </div>
 
     </div>
 
-    <!-- Načtení datové sady a skriptů -->
-    <script src="data.js?v=2"></script>
-    <script src="app.js?v=2"></script>
+    <script src="data.js?v=3"></script>
+    <script src="app.js?v=3"></script>
 </body>
 </html>

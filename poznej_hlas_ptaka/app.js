@@ -5,18 +5,44 @@ let cisloOtazky = 0;
 const celkemOtazek = 10;
 let aktivniAudio = null;
 
-// Proměnné pro režim „Poznávej“ (procházení katalogu)
 let indexPoznavej = 0;
+
+// Cache pro přednačtená média (zajišťuje bleskové spuštění bez lagů)
+const prednacitanaMeda = {
+    audio: {},
+    foto: {}
+};
+
+// Funkce pro okamžité přednačtení všech dat na pozadí
+function prednacistMateriavy() {
+    ptaciData.forEach(ptak => {
+        // Přednačtení obrázku
+        const img = new Image();
+        img.src = ptak.foto;
+        prednacitanaMeda.foto[ptak.id] = img;
+
+        // Přednačtení zvuku
+        const audio = new Audio();
+        audio.src = ptak.audio;
+        audio.preload = "auto";
+        prednacitanaMeda.audio[ptak.id] = audio;
+    });
+}
+
+// Spustit přednačítání hned při načtení skriptu
+window.addEventListener("DOMContentLoaded", () => {
+    prednacistMateriavy();
+});
 
 // Odkazy na prvky na stránce
 const uvodniObrazovka = document.getElementById("uvodni-obrazovka");
 const herniObrazovka = document.getElementById("herni-obrazovka");
 const konecnaObrazovka = document.getElementById("konecna-obrazovka");
-const poznavejObrazovka = document.getElementById("poznavej-obrazovka"); // Nová obrazovka pro poznávání
+const poznavejObrazovka = document.getElementById("poznavej-obrazovka");
 const zdrojeModal = document.getElementById("zdroje-modal");
 
 const btnStart = document.getElementById("btn-start");
-const btnPoznavejMenu = document.getElementById("btn-poznavej-menu"); // Tlačítko v menu
+const btnPoznavejMenu = document.getElementById("btn-poznavej-menu");
 const btnPrehrat = document.getElementById("btn-prehrat");
 const odpovediBox = document.getElementById("odpovedi-box");
 const vysledekOtazky = document.getElementById("vysledek-otazky");
@@ -25,7 +51,6 @@ const ptakFoto = document.getElementById("ptak-foto");
 const ptakNazev = document.getElementById("ptak-nazev");
 const btnDalsi = document.getElementById("btn-dalsi");
 
-// Prvky pro režim Poznávej
 const poznavejFoto = document.getElementById("poznavej-foto");
 const poznavejNazev = document.getElementById("poznavej-nazev");
 const poznavejInfoZdroje = document.getElementById("poznavej-info-zdroje");
@@ -52,7 +77,6 @@ function schovejVse() {
     zdrojeModal.classList.add("hidden");
 }
 
-// Spuštění testu (kvízu)
 btnStart.addEventListener("click", () => {
     skore = 0;
     cisloOtazky = 0;
@@ -62,7 +86,6 @@ btnStart.addEventListener("click", () => {
     dalsiOtazka();
 });
 
-// Spuštění režimu „Poznávej“
 if (btnPoznavejMenu) {
     btnPoznavejMenu.addEventListener("click", () => {
         zastavAudio();
@@ -103,7 +126,6 @@ btnZavritZdroje.addEventListener("click", () => {
     uvodniObrazovka.classList.remove("hidden");
 });
 
-// Pomocná funkce pro bezpečné zastavení audia
 function zastavAudio() {
     if (aktivniAudio) {
         aktivniAudio.pause();
@@ -112,7 +134,7 @@ function zastavAudio() {
     }
 }
 
-// --- LOGIKA PRO REŽIM „POZNÁVEJ“ ---
+// Režim Poznávej
 function aktualizujPoznavejKarta() {
     zastavAudio();
     let ptak = ptaciData[indexPoznavej];
@@ -140,17 +162,17 @@ if (btnPoznavejAudio) {
     btnPoznavejAudio.addEventListener("click", () => {
         zastavAudio();
         let ptak = ptaciData[indexPoznavej];
-        aktivniAudio = new Audio(ptak.audio);
-        aktivniAudio.addEventListener('loadedmetadata', () => {
-            aktivniAudio.currentTime = 0.5;
-        });
+        
+        // Využití předpřipraveného audia pro bleskový start
+        aktivniAudio = prednacitanaMeda.audio[ptak.id] || new Audio(ptak.audio);
+        aktivniAudio.currentTime = 0.5;
         aktivniAudio.play().catch(error => {
             alert("Zvukový soubor se nepodařilo přehrát.");
         });
     });
 }
 
-// --- LOGIKA PRO HLAVNÍ KVÍZ (TEST) ---
+// Herní režim (Test)
 function dalsiOtazka() {
     zastavAudio();
 
@@ -193,11 +215,9 @@ function dalsiOtazka() {
 btnPrehrat.addEventListener("click", () => {
     zastavAudio();
 
-    aktivniAudio = new Audio(aktualniPtak.audio);
-    
-    aktivniAudio.addEventListener('loadedmetadata', () => {
-        aktivniAudio.currentTime = 0.5;
-    });
+    // Okamžité přehrání z cache
+    aktivniAudio = prednacitanaMeda.audio[aktualniPtak.id] || new Audio(aktualniPtak.audio);
+    aktivniAudio.currentTime = 0.5;
 
     aktivniAudio.play().catch(error => {
         alert("Zvukový soubor se nepodařilo přehrát.");
@@ -235,7 +255,7 @@ function vyhodnotOdpoved(zvoleneId, tlacitko) {
 
     setTimeout(() => {
         vysledekOtazky.classList.remove("hidden");
-    }, 400);
+    }, 300);
 }
 
 btnDalsi.addEventListener("click", () => {

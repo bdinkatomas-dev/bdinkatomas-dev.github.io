@@ -76,7 +76,7 @@ const ptaciData = [
         nazev: "Sýkora modřinka",
         audio: "audio/Parus caeruleus.mp3",
         foto: "image/Parus caeruleus.jpg",
-        autorFoto: "Pavel Říha",
+        autorFoto: "I,Luc Viatour",
         licenceFoto: "CC BY-SA 3.0"
     },
     {
@@ -84,7 +84,7 @@ const ptaciData = [
         nazev: "Sýkora koňadra",
         audio: "audio/Parus major.mp3",
         foto: "image/Parus major.jpg",
-        autorFoto: "Alena Malá",
+        autorFoto: "Slawek Staszczuk",
         licenceFoto: "CC BY 3.0"
     },
     {
@@ -92,7 +92,7 @@ const ptaciData = [
         nazev: "Rehek domácí",
         audio: "audio/Phoenicurus ochruros.mp3",
         foto: "image/Phoenicurus ochruros.jpg",
-        autorFoto: "Karel Čapek",
+        autorFoto: "Fernando Losada Rodríguez",
         licenceFoto: "CC BY-SA 4.0"
     },
     {
@@ -100,23 +100,23 @@ const ptaciData = [
         nazev: "Puštík obecný",
         audio: "audio/Strix aluco.mp3",
         foto: "image/Strix aluco.jpg",
-        autorFoto: "Zuzana Veselá",
-        licenceFoto: "CC BY 4.0"
+        autorFoto: "Martin Mecnarowski",
+        licenceFoto: "CC BY-SA 3.0"
     },
     {
         id: "14",
         nazev: "Drozd zpěvný",
         audio: "audio/Turdus philomelos.mp3",
         foto: "image/Turdus philomelos.jpg",
-        autorFoto: "Miroslav Horník",
-        licenceFoto: "CC BY-SA 3.0"
+        autorFoto: "Phil Mclver",
+        licenceFoto: "CC BY-SA 2.0"
     },
     {
         id: "15",
         nazev: "Dudek chocholatý",
         audio: "audio/Upupa epops.mp3",
         foto: "image/Upupa epops.jpg",
-        autorFoto: "Dana Procházková",
-        licenceFoto: "Public Domain"
+        autorFoto: "Keta",
+        licenceFoto: "CC BY-SA 2.5"
     }
 ];

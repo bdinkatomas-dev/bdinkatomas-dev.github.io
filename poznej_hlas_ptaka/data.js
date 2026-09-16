@@ -5,46 +5,46 @@ const ptaciData = [
         audio: "audio/Apus apus.mp3",
         foto: "image/Apus apus.jpg",
         autorFoto: "XJochemx.nl",
-        licenceFoto: "Creative Commons Attribution-Share Alike 4.0 International"
+        licenceFoto: "CC BY-SA 4.0"
     },
     {
         id: "2",
         nazev: "Kalous ušatý",
         audio: "audio/Asio otus.mp3",
         foto: "image/Asio otus.jpg",
-        autorFoto: "Petr Svoboda",
-        licenceFoto: "CC BY 3.0"
+        autorFoto: "Caroline Legg",
+        licenceFoto: "CC BY 2.0"
     },
     {
         id: "3",
         nazev: "Stehlík obecný",
         audio: "audio/Carduelis carduelis.mp3",
         foto: "image/Carduelis carduelis.jpg",
-        autorFoto: "Marie Dvořáková",
-        licenceFoto: "Public Domain"
+        autorFoto: "Francis C. Franklin",
+        licenceFoto: "CC BY-SA 3.0"
     },
     {
         id: "4",
         nazev: "Zvonek zelený",
         audio: "audio/Carduelis chloris.mp3",
         foto: "image/Carduelis chloris.jpg",
-        autorFoto: "Jiří Černý",
-        licenceFoto: "CC BY-SA 3.0"
+        autorFoto: "Charles J. Sharp",
+        licenceFoto: "CC BY-SA 4.0"
     },
     {
         id: "5",
         nazev: "Strakapoud velký",
         audio: "audio/Dendrocopus major.mp3",
         foto: "image/Dendrocopus major.jpg",
-        autorFoto: "Eva Veselá",
-        licenceFoto: "CC BY 4.0"
+        autorFoto: "Snowmanradio (talk)",
+        licenceFoto: "CC BY-SA 3.0"
     },
     {
         id: "6",
         nazev: "Datel černý",
         audio: "audio/Dryocopus martius.mp3",
         foto: "image/Dryocopus martius.jpg",
-        autorFoto: "Tomáš Král",
+        autorFoto: "Clément Bardot",
         licenceFoto: "CC BY-SA 4.0"
     },
     {
@@ -52,15 +52,15 @@ const ptaciData = [
         nazev: "Pěnkava obecná",
         audio: "audio/Fringilla coelebs.mp3",
         foto: "image/Fringilla coelebs.jpg",
-        autorFoto: "Hana Procházková",
-        licenceFoto: "CC BY 3.0"
+        autorFoto: "romanm (talk)",
+        licenceFoto: "Public Domain"
     },
     {
         id: "8",
         nazev: "Vlaštovka obecná",
         audio: "audio/Hirundo rustica.mp3",
         foto: "image/Hirundo rustica.jpg",
-        autorFoto: "Martin Kučera",
+        autorFoto: "Dion Art",
         licenceFoto: "CC BY-SA 4.0"
     },
     {
@@ -68,7 +68,7 @@ const ptaciData = [
         nazev: "Vlha pestrá",
         audio: "audio/Merops apiaster.mp3",
         foto: "image/Merops apiaster.jpg",
-        autorFoto: "Lucie Horáková",
+        autorFoto: "Andy Morffew",
         licenceFoto: "CC BY 2.0"
     },
     {
